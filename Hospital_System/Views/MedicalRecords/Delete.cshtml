@@ -1,0 +1,28 @@
+﻿@model MedicalRecord
+@{
+	ViewData["Title"] = "Delete MedicalRecord";
+}
+<h1> Delete MedicalRecord</h1>
+<div class="container">
+	<form method="post" asp-action="Delete">
+		<div class="form-group">
+			<label class="control-label">Diagnosis</label><br>
+			<input asp-for="Diagnosis" class="form-control" raedonly /><br>
+
+			<label class="control-label">Notes</label><br>
+			<input asp-for="Notes" class="form-control" readonly /><br>
+
+			<label class="control-label">Patient</label><br>
+			<input asp-for="PatientId" class="form-control" readonly /><br>
+
+			<label class="control-label">Doctor</label><br>
+			<input asp-for="DoctorId" class="form-control" readonly /><br>
+
+		</div>
+		<br>
+		<div class="form-group">
+			<input type="submit" value="Delete" class="btn btn-primary" />
+			<a asp-action="Index" class="btn btn-secondary">Cancel</a>
+		</div>
+	</form>
+</div>

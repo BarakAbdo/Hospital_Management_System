@@ -1,0 +1,28 @@
+﻿@model MedicalRecord
+@{
+	ViewData["Title"] = "Create MedicalRecord";
+}
+<h1> Create MedicalRecord</h1>
+<div class="container">
+	<form method="post" asp-action="Create">
+		<div class="form-group">
+			<label class="control-label">Diagnosis</label><br>
+			<input asp-for="Diagnosis" class="form-control" /><br>
+
+			<label class="control-label">Notes</label><br>
+			<input asp-for="Notes" class="form-control" /><br>
+
+			<label class="control-label">Patient</label><br>
+			<input asp-for="PatientId" class="form-control" /><br>
+
+			<label class="control-label">Doctor</label><br>
+			<input asp-for="DoctorId" class="form-control" /><br>
+
+		</div>
+		<br>
+		<div class="form-group">
+			<input type="submit" value="Create" class="btn btn-primary" />
+			<a asp-action="Index" class="btn btn-secondary">Cancel</a>
+		</div>
+	</form>
+</div>

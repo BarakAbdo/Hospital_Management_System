@@ -1,0 +1,46 @@
+﻿@model IEnumerable<Doctor>
+
+@{
+    ViewData["Title"] = "Doctor Management";
+}
+
+<div class="text-center mb-4">
+    <h2 class="fw-bold">Doctor Management</h2>
+    <p class="text-muted">Manage and view doctor information</p>
+</div>
+
+<div class="container mt-2">
+    <div class="mb-3 text-end">
+        <a asp-action="Create" class="btn btn-primary">Create new Doctor</a>
+    </div>
+    <table class="table table-primary table-hover">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Specialization</th>
+                <th>Phone</th>
+                <th>Department</th>
+                <th>Action</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var Doctor in Model)
+            {
+                <tr>
+                    <td>@Doctor.Id</td>
+                    <td>@Doctor.Name</td>
+                    <td>@Doctor.Specialization</td>
+                    <td>@Doctor.Phone</td>
+                    <td>@Doctor.Department?.Name</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-Id="@Doctor.Id" class="btn btn-sm btn-primary">Edit</a>
+                        <a asp-action="Delete" asp-route-Id="@Doctor.Id" class="btn btn-sm btn-danger">Delete</a>
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

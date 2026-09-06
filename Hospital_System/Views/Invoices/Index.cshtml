@@ -1,0 +1,45 @@
+﻿@model IEnumerable<Invoice>
+
+@{
+    ViewData["Title"] = "Invoice Management";
+}
+
+<div class="text-center mb-4">
+    <h2 class="fw-bold">Invoice Management</h2>
+    <p class="text-muted">Manage and view invoice information</p>
+</div>
+
+<div class="container mt-2">
+    <div class="mb-3 text-end">
+        <a asp-action="Create" class="btn btn-primary">Create new Invoice</a>
+    </div>
+    <table class="table table-primary table-hover">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Amount</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Patient</th>
+                <th>Action</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var Invoice in Model)
+            {
+                <tr>
+                    <td>@Invoice.Id</td>
+                    <td>@Invoice.Amount</td>
+                    <td>@Invoice.Date</td>
+                    <td>@Invoice.Status</td>
+                    <td>@Invoice.Patient?.Name</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-Id="@Invoice.Id" class="btn btn-sm btn-primary">Edit</a>
+                        <a asp-action="Delete" asp-route-Id="@Invoice.Id" class="btn btn-sm btn-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,31 @@
+﻿@model Prescription
+@{
+	ViewData["Title"] = "Edit Prescription";
+}
+<h1> Edit Prescription</h1>
+<div class="container">
+	<form method="post" asp-action="Edit">
+		<div class="form-group">
+			<label class="control-label">Dosage</label><br>
+			<input asp-for="Dosage" class="form-control" /><br>
+
+			<label class="control-label">Duration</label><br>
+			<input asp-for="Duration" class="form-control" /><br>
+
+			<label class="control-label">Patient</label><br>
+			<input asp-for="PatientId" class="form-control" /><br>
+
+			<label class="control-label">Doctor</label><br>
+			<input asp-for="DoctorId" class="form-control" /><br>
+
+			<label class="control-label">Medication</label><br>
+			<input asp-for="MedicationId" class="form-control" /><br>
+
+		</div>
+		<br>
+		<div class="form-group">
+			<input type="submit" value="Edit" class="btn btn-primary" />
+			<a asp-action="Index" class="btn btn-secondary">Cancel</a>
+		</div>
+	</form>
+</div>

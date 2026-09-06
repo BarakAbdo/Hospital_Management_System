@@ -1,0 +1,28 @@
+﻿@model Invoice
+@{
+	ViewData["Title"] = "Delete Invoice";
+}
+<h1> Delete Invoice</h1>
+<div class="container">
+	<form method="post" asp-action="Delete">
+		<div class="form-group">
+			<label class="control-label">Amount</label><br>
+			<input asp-for="Amount" class="form-control" readonly /><br>
+
+			<label class="control-label">Date</label><br>
+			<input asp-for="Date" class="form-control" readonly /><br>
+
+			<label class="control-label">Status</label><br>
+			<input asp-for="Status" class="form-control" readonly /><br>
+
+			<label class="control-label">Patient</label><br>
+			<input asp-for="PatientId" class="form-control" readonly /><br>
+
+		</div>
+		<br>
+		<div class="form-group">
+			<input type="submit" value="Delete" class="btn btn-primary" />
+			<a asp-action="Index" class="btn btn-secondary">Cancel</a>
+		</div>
+	</form>
+</div>
