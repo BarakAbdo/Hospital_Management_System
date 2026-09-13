@@ -7,16 +7,16 @@
 	<form method="post" asp-action="Delete">
 		<div class="form-group">
 			<label class="control-label">Diagnosis</label><br>
-			<input asp-for="Diagnosis" class="form-control" raedonly /><br>
+			<input asp-for="Diagnosis" class="form-control" readonly /><br>
 
 			<label class="control-label">Notes</label><br>
 			<input asp-for="Notes" class="form-control" readonly /><br>
 
 			<label class="control-label">Patient</label><br>
-			<input asp-for="PatientId" class="form-control" readonly /><br>
+			<input asp-for="Patient.Name" class="form-control" readonly /><br>
 
 			<label class="control-label">Doctor</label><br>
-			<input asp-for="DoctorId" class="form-control" readonly /><br>
+			<input asp-for="Doctor.Name" class="form-control" readonly /><br>
 
 		</div>
 		<br>

@@ -1,6 +1,7 @@
 ﻿using Hospital_System.Data;
 using Hospital_System.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hospital_System.Controllers
@@ -21,9 +22,33 @@ namespace Hospital_System.Controllers
                 .Include(e=>e.Medication).ToList();
             return View(prescriptions);
         }
+        public void GetPatient() 
+        {
+            IEnumerable<Patient> patient = _db.Patients.ToList();
+            SelectList patientSelectList = new SelectList(patient,"Id","Name");
+            ViewBag.patientSelectList = patientSelectList;
+        }
+
+        public void GetDoctor() 
+        { 
+            IEnumerable<Doctor> doctors = _db.Doctors.ToList();
+            SelectList doctorSelectList = new SelectList(doctors, "Id", "Name");
+            ViewBag.doctorSelectList = doctorSelectList;
+        }
+
+        public void GetMedication() 
+        {
+            IEnumerable<Medication> medications = _db.Medications.ToList();
+            SelectList medicationSelectList = new SelectList(medications,"Id", "Name"); 
+            ViewBag.medicationSelectList = medicationSelectList;
+        }
         [HttpGet]
         public IActionResult Create()
         {
+            GetPatient();
+            GetDoctor();
+            GetMedication();
+
             return View();
         }
         [HttpPost]
@@ -35,11 +60,18 @@ namespace Hospital_System.Controllers
                 _db.SaveChanges();
                 return RedirectToAction("Index");
             }
+            GetPatient();
+            GetDoctor();
+            GetMedication();
+
             return View(prescription);
         }
         [HttpGet]
         public IActionResult Edit(int Id)
         {
+            GetPatient();
+            GetDoctor();
+            GetMedication();
             var prescription = _db.Prescriptions.Find(Id);
             if (prescription == null)
             {
@@ -56,12 +88,18 @@ namespace Hospital_System.Controllers
                 _db.SaveChanges();
                 return RedirectToAction("Index");
             }
+            GetPatient();
+            GetDoctor();
+            GetMedication();
             return View(prescription);
 
         }
         [HttpGet]
         public IActionResult Delete(int Id)
         {
+            GetPatient();
+            GetDoctor();
+            GetMedication();
             var prescription = _db.Prescriptions.Find(Id);
             if (prescription == null)
             {
@@ -72,13 +110,18 @@ namespace Hospital_System.Controllers
         [HttpPost]
         public IActionResult Delete(Prescription prescription)
         {
-            if (ModelState.IsValid)
+
+            GetDoctor();
+            GetPatient();
+            var prescriptions = _db.Prescriptions.Find(prescription.Id);
+            if (prescriptions == null)
             {
-                _db.Prescriptions.Remove(prescription);
-                _db.SaveChanges();
-                return RedirectToAction("Index");
+                return NotFound();
             }
-            return View(prescription);
+
+            _db.Prescriptions.Remove(prescriptions);
+            _db.SaveChanges();
+            return RedirectToAction("Index");
         }
     }
 }

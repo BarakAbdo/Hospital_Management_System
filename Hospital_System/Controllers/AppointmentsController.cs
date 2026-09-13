@@ -1,6 +1,7 @@
 ﻿using Hospital_System.Data;
 using Hospital_System.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hospital_System.Controllers
@@ -21,9 +22,26 @@ namespace Hospital_System.Controllers
             return View(appointments);
 
         }
+        public void GetDoctor() 
+        {
+            IEnumerable<Doctor> doctors = _db.Doctors.ToList();
+            SelectList doctorSelectList = new SelectList(doctors,"Id" ,"Name");
+            ViewBag.DoctorSelectList = doctorSelectList;
+        }
+
+        public void GetPatient() 
+        {
+            IEnumerable<Patient> patients = _db.Patients.ToList();
+            SelectList patientSelectList = new SelectList(patients,"Id","Name" );
+            ViewBag.patientSelectList = patientSelectList;
+        }
+
         [HttpGet]
         public IActionResult Create()
         {
+            GetDoctor();
+            GetPatient();
+
             return View();
         }
 
@@ -37,12 +55,16 @@ namespace Hospital_System.Controllers
                 _db.SaveChanges();
                 return RedirectToAction("Index");
             }
+            GetDoctor();
+            GetPatient();
             return View(appointment);
         }
 
         [HttpGet]
         public IActionResult Edit(int Id)
         {
+            GetDoctor();
+            GetPatient();
             var appointment = _db.Appointments.Find(Id);
             if (appointment == null)
             {
@@ -61,17 +83,22 @@ namespace Hospital_System.Controllers
                 _db.SaveChanges();
                 return RedirectToAction("Index");
             }
+            GetDoctor();
+            GetPatient();
             return View(appointment);
         }
 
         [HttpGet]
         public IActionResult Delete(int Id)
         {
+            GetDoctor();
+            GetPatient();
             var appointment = _db.Appointments.Find(Id);
             if (appointment == null)
             {
                 return NotFound();
             }
+            
             return View(appointment);
         }
 
@@ -79,14 +106,31 @@ namespace Hospital_System.Controllers
         [HttpPost]
         public IActionResult Delete(Appointment appointment)
         {
-            if (ModelState.IsValid)
+            GetDoctor();
+            GetPatient();
+            var appointments = _db.Appointments.Find(appointment.Id);
+            if (appointments == null)
             {
-                _db.Appointments.Remove(appointment);
-                _db.SaveChanges();
-                return RedirectToAction("Index");
+                return NotFound();
             }
-            return View(appointment);
+
+            _db.Appointments.Remove(appointments);
+            _db.SaveChanges();
+            return RedirectToAction("Index");
+
         }
+
+        //public IActionResult Details(int id)
+        //{
+        //    //ViewBag.Departments = _db.Departments.ToList();
+        //    var appointment = _db.Appointments.Include(e => e.Patient).Include(e => e.Doctor).ToList();
+        //    if (appointment == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    return View(appointment);
+        //}
+
 
     }
 }

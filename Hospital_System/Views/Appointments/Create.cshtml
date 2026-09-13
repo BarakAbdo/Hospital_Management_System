@@ -9,11 +9,23 @@
 <div class="container">
     <form method="post" asp-action="Create">
         <div class="form-group">
-            <label class="control-label">Patient</label><br>
-            <input asp-for="PatientId" class="form-control" /><br>
+            <div class="form-group">
+                <label class="control-label">Patient</label>
+                <select asp-for="PatientId" class="form-control" asp-items="ViewBag.patientSelectList">
+                    <option value="">-- Select Patient --</option>
 
-            <label class="control-label">Doctor</label><br>
-            <input asp-for="DoctorId" class="form-control" /><br>
+                </select>
+            </div>
+            <br>
+
+            <div class="form-group">
+                <label class="control-label">Doctor</label>
+                <select asp-for="DoctorId" class="form-control" asp-items="ViewBag.doctorSelectList">
+                    <option value="">-- Select Doctor --</option>
+
+                </select>
+            </div>
+            <br>
 
             <label class="control-label">Date</label><br>
             <input asp-for="Date" class="form-control" /><br>

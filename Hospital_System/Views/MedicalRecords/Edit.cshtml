@@ -12,11 +12,21 @@
 			<label class="control-label">Notes</label><br>
 			<input asp-for="Notes" class="form-control" /><br>
 
-			<label class="control-label">Patient</label><br>
-			<input asp-for="PatientId" class="form-control" /><br>
+			<div class="form-group">
+				<label class="control-label">Patient</label>
+				<select asp-for="PatientId" class="form-control" asp-items="ViewBag.patientSelectList">
+					<option value="">-- Select Patient --</option>
 
-			<label class="control-label">Doctor</label><br>
-			<input asp-for="DoctorId" class="form-control" /><br>
+				</select>
+			</div>
+			<br>
+			<div class="form-group">
+				<label class="control-label">Doctor</label>
+				<select asp-for="DoctorId" class="form-control" asp-items="ViewBag.DoctorSelectList">
+					<option value="">-- Select Doctor --</option>
+
+				</select>
+			</div>
 
 		</div>
 		<br>

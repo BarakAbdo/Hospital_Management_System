@@ -16,8 +16,13 @@
 			<label class="control-label">Phone</label><br>
 			<input asp-for="Phone" class="form-control" /><br>
 
-			<label class="control-label">Department</label><br>
-			<input asp-for="DepartmentId" class="form-control" /><br>
+			<div class="form-group">
+				<label class="control-label">Department</label>
+				<select asp-for="DepartmentId" class="form-control" asp-items="ViewBag.departmentSelectList">
+					<option value="">-- Select Department --</option>
+
+				</select>
+			</div>
 
 		</div>
 		<br>
