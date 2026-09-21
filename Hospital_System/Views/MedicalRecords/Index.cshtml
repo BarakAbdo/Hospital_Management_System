@@ -1,4 +1,5 @@
-﻿@model IEnumerable<MedicalRecord>
+﻿@using Hospital_System.Dtos.MedicalRecordsDtos
+@model IEnumerable<MedicalRecordDto>
 
 @{
     ViewData["Title"] = "MedicalRecord Management";
@@ -32,11 +33,12 @@
                     <td>@MedicalRecord.Id</td>
                     <td>@MedicalRecord.Diagnosis</td>
                     <td>@MedicalRecord.Notes</td>
-                    <td>@MedicalRecord.Patient?.Name</td>
-                    <td>@MedicalRecord.Doctor?.Name</td>
+                    <td>@MedicalRecord.PatientName</td>
+                    <td>@MedicalRecord.DoctorName</td>
                     <td>
-                        <a asp-action="Edit" asp-route-Id="@MedicalRecord.Id" class="btn btn-sm btn-primary">Edit</a>
-                        <a asp-action="Delete" asp-route-Id="@MedicalRecord.Id" class="btn btn-sm btn-danger">Delete</a>
+                        <a asp-action="Edit" asp-route-uid="@MedicalRecord.UID" class="btn btn-sm btn-primary">Edit</a>
+                        <a asp-action="Delete" asp-route-uid="@MedicalRecord.UID" class="btn btn-sm btn-danger">Delete</a>
+                        <a asp-controller="MedicalRecords" asp-action="ManageFiles" asp-route-uid="@MedicalRecord.UID" class="btn btn-warning">Files</a>
                     </td>
                 </tr>
             }

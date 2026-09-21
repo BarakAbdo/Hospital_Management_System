@@ -5,9 +5,16 @@
 <h1> Delete Patient</h1>
 <div class="container">
 	<form method="post" asp-action="Delete">
+		
+
+		<input asp-for="UID" hidden />
+		<input asp-for="Id" hidden />
+
+
 		<div class="form-group">
 			<label class="control-label">Name</label><br>
 			<input asp-for="Name" class="form-control" readonly/><br>
+
 
 			<label class="control-label">Gender</label><br>
 			<input asp-for="Gender" class="form-control" readonly /><br>

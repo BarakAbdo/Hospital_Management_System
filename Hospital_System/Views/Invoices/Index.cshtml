@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Invoice>
+﻿@using Hospital_System.Dtos.InvoicesDtos
+@model IEnumerable<InvoiceDto>
 
 @{
     ViewData["Title"] = "Invoice Management";
@@ -33,10 +34,12 @@
                     <td>@Invoice.Amount</td>
                     <td>@Invoice.Date</td>
                     <td>@Invoice.Status</td>
-                    <td>@Invoice.Patient?.Name</td>
+                    <td>@Invoice.PatientName</td>
                     <td>
-                        <a asp-action="Edit" asp-route-Id="@Invoice.Id" class="btn btn-sm btn-primary">Edit</a>
-                        <a asp-action="Delete" asp-route-Id="@Invoice.Id" class="btn btn-sm btn-danger">Delete</a>
+                        <a asp-action="Edit" asp-route-uid="@Invoice.UID" class="btn btn-sm btn-primary">Edit</a>
+                        <a asp-action="Delete" asp-route-uid="@Invoice.UID" class="btn btn-sm btn-danger">Delete</a>
+                        <a asp-controller="Invoices" asp-action="ManageFiles" asp-route-uid="@Invoice.UID" class="btn btn-warning">Files</a>
+
                     </td>
                 </tr>
             }

@@ -1,0 +1,514 @@
+--create new date base as name My Project
+create database MyProject
+
+
+
+--create table departments with proparites
+ 
+CREATE TABLE departments(
+department_id int CONSTRAINT department_department_id_PK PRIMARY KEY(department_id),
+department_name varchar(50) NOT NULL CONSTRAINT departments_department_name_UQ UNIQUE
+);
+
+
+
+--create table instructors with proparites
+
+CREATE TABLE instructors(
+instructor_id int CONSTRAINT instructors_instructor_id_PK PRIMARY KEY(instructor_id),
+first_name varchar(50) NOT NULL,
+last_name varchar(50) NOT NULL
+);
+
+
+--create table employees with proparites
+
+CREATE TABLE employees(
+employee_id int CONSTRAINT employees_employee_id_PK PRIMARY KEY(employee_id),
+first_name varchar(50) NOT NULL,
+last_name varchar(50) NOT NULL,
+department_id int CONSTRAINT employees_department_id_FK FOREIGN KEY REFERENCES departments(department_id),
+salary decimal(10,2) CHECK(salary >= 0)
+);
+
+
+
+--create table leve requests with proparites
+
+CREATE TABLE leave_requests(
+leavel_id int CONSTRAINT leave_requests_leavel_id_PK PRIMARY KEY(leavel_id),
+employee_id int CONSTRAINT leave_requests_employee_id_FK FOREIGN KEY REFERENCES employees(employee_id),
+start_date date NOT NULL,
+end_date date NOT NULL,
+reason varchar(100),
+status varchar(100) CHECK (status IN ('Pending', 'Approved', 'Rejected'))
+);
+
+
+
+--create table training courses with proparites
+
+CREATE TABLE training_courses(
+course_id int CONSTRAINT training_courses_course_id_PK PRIMARY KEY(course_id),
+course_name varchar(100) NOT NULL,
+start_date date NOT NULL, 
+end_date date NOT NULL, 
+instructor_id int CONSTRAINT training_courses_instructor_id_FK FOREIGN KEY REFERENCES instructors(instructor_id)
+);
+
+
+
+--select all column from table departments and sort department_id asc
+
+select * 
+from  departments
+order by department_id
+
+
+--insert all information for departments
+
+insert into departments(department_id,department_name)
+values(1, 'HR')
+
+insert into departments(department_id,department_name)
+values(2, 'Finance')
+
+insert into departments(department_id,department_name)
+values(3, 'IT')
+
+insert into departments(department_id,department_name)
+values(4, 'Markting')
+
+insert into departments(department_id,department_name)
+values(5, 'Operations')
+
+insert into departments(department_id,department_name)
+values(6, 'Sales')
+
+insert into departments(department_id,department_name)
+values(7, 'Cutomer Service')
+
+insert into departments(department_id,department_name)
+values(8, 'Research and Development')
+
+
+
+-- select all column from table employees
+
+select *
+from employees
+
+
+--insert all infromation for employees
+ 
+insert into employees(employee_id, first_name, last_name,department_id, salary)
+values(1, 'John' , 'Doe' , 1, 50000.00)
+
+insert into employees(employee_id, first_name, last_name,department_id, salary)
+values(2, 'Jane' , 'Smaith' ,2 , 60000.00)
+
+insert into employees (employee_id, first_name, last_name, department_id, salary)
+values(3, 'Ahmed', 'Ali', 3, 55000.00)
+
+insert into employees(employee_id, first_name, last_name, department_id ,salary)
+values(4, 'Sara', 'Khan', 2,52000.00)
+
+insert into employees(employee_id, first_name, last_name, department_id, salary)
+values(5, 'Mohamed' , 'Hassan' ,1 ,48000.00)
+
+insert into employees(employee_id, first_name, last_name, department_id, salary)
+values(6, 'Hassan', 'Ali', 1, 54000.00)
+
+insert into employees(employee_id, first_name, last_name, department_id, salary)
+values(7, 'Fatima', 'Khaled' ,2 , 62000.00)
+
+insert into employees(employee_id, first_name, last_name, department_id, salary)
+values(8, 'Amr', 'Mohamed', 3, 56000.00)
+
+insert into employees(employee_id, first_name, last_name, department_id, salary)
+values(9, 'Sara', 'Ahmed', 4, 51000.00)
+
+insert into employees(employee_id, first_name, last_name, department_id, salary)
+values(10, 'Ahmed', 'Youssef', 1, 59000.00)
+
+
+
+--select all column from table instructors
+
+select * 
+from instructors
+
+
+--insert all information for instructor
+
+insert into instructors(instructor_id, first_name,last_name)
+values(1, 'Sarah', 'Johnson')
+
+insert into instructors(instructor_id, first_name, last_name)
+values(2, 'James', 'Smith')
+
+insert into instructors(instructor_id, first_name, last_name)
+values(3, 'Mary', 'Davis')
+
+insert into instructors(instructor_id, first_name, last_name)
+values(4,'Ahmed', 'Hassan')
+
+insert into instructors(instructor_id, first_name, last_name)
+values(5, 'Fatima', 'Ali')
+
+insert into instructors(instructor_id, first_name,last_name)
+values(6, 'Yasmine', 'Ali')
+
+insert into instructors(instructor_id, first_name, last_name)
+values(7, 'Mohamed', 'Hassan')
+
+insert into instructors(instructor_id, first_name, last_name) 
+values(8, 'Ahmed', 'Youssef')
+
+insert into instructors(instructor_id, first_name, last_name)
+values(9, 'Amr', 'Mohamed')
+
+insert into instructors(instructor_id, first_name, last_name)
+values(10, 'Sara', 'Ahmed')
+
+
+
+--select all column from table training courses
+
+select  * 
+from training_courses
+
+
+--insert all information for training courses
+
+insert into training_courses(course_id, course_name, start_date, end_date, instructor_id)
+values(201, 'Leadership Skills', '2023-11-05', '2023-11-07', 1)
+
+insert into training_courses(course_id, course_name, start_date, end_date, instructor_id)
+values(202, 'Excel Advanced', '2023-11-12', '2023-11-14' ,2)
+
+insert into training_courses(course_id, course_name, start_date, end_date, instructor_id)
+values(203, 'Time Management', '2023-11-20', '2023-11-21', 3)
+
+insert into training_courses(course_id, course_name, start_date, end_date, instructor_id)
+values(204, 'Communication Tips', '2023-12-02', '2023-12-04', 4)
+
+insert into training_courses(course_id, course_name, start_date, end_date, instructor_id)
+values(205, 'Conflict Resolution', '2023-12-10', '2023-12-11', 5)
+
+insert into training_courses(course_id, course_name, start_date, end_date, instructor_id)
+values(206, 'Negotiation Skills','2023-12-20', '2023-12-22', 6)
+
+insert into training_courses(course_id, course_name, start_date, end_date, instructor_id)
+values(207, 'Financial Planning', '2024-01-05', '2024-01-07', 7)
+
+insert into training_courses(course_id, course_name, start_date, end_date, instructor_id)
+values(208, 'Leadership Workshop', '2024-01-10', '2024-01-12', 8)
+
+insert into training_courses(course_id, course_name, start_date, end_date, instructor_id)
+values(209, 'Effective Communication', '2024-01-15', '2024-01-17', 9)
+
+insert into training_courses(course_id, course_name, start_date,end_date, instructor_id)
+values(210, 'Time Management', '2024-01-20', '2024-01-22', 10)
+
+
+
+--select all column from table leave requests
+
+select * 
+from leave_requests
+
+
+--insert all infromation for leave_request 
+
+insert into leave_requests(leavel_id, employee_id, start_date, end_date, reason,status)
+values(101, 1, '2023-10-10', '2023-10-14', 'Annual Laeave', 'Approved')
+
+insert into leave_requests(leavel_id, employee_id, start_date, end_date, reason, status)
+values(102, 3, '2023-11-05', '2023-11-07', 'Conference', 'Pending')
+
+insert into leave_requests(leavel_id, employee_id, start_date, end_date, reason, status)
+values(103, 2, '2023-10-20' , '2023-10-21', 'Sick Leave', 'Approved')
+
+insert into leave_requests(leavel_id, employee_id, start_date, end_date,reason,status)
+values(104, 4, '2023-12-01', '2023-12-03', 'Family Emergency', 'Pending')
+
+insert into leave_requests(leavel_id, employee_id, start_date, end_date, reason,status)
+values(105, 5,'2023-10-25', '2023-10-26', 'Personal', 'Approved')
+
+
+
+
+ --Q1 update salary of employee
+
+update employees
+set salary = 52000.00
+where employee_id = 5
+
+
+
+--Q2 change department HR to Human Resources
+
+update departments
+set department_name = 'Human Resources'
+where department_id = 1
+
+
+
+--Q3 change manager 10 to departmant 3
+
+update employees
+set manager_id = 10
+where department_id = 3
+
+
+
+--Q4 update start date of training course 202 to be 2023-11-13
+
+update training_courses
+set start_date = '2023-11-13'
+where course_id = 202
+
+
+
+--Q5 delete employee number 8
+
+delete from employees
+where employee_id = 8
+
+
+
+--Q6 delete department 7
+
+delete from departments
+where department_id = 7
+
+
+
+--Q7 delete training course  number 205
+
+delete from training_courses
+where course_id = 205
+
+
+
+--Q1 part 2 name and salary to employees
+
+select first_name, last_name,salary --,avg(salary) 'average salary'
+from  employees 
+group by first_name, last_name,salary
+
+
+select * from employees
+
+--Q2 calculating  average salary
+
+select avg(salary) 'average salary'
+from employees
+
+select * from employees
+
+--Q1 name of employees and  salary
+
+select first_name, last_name, salary
+from employees
+
+
+
+--Q2 name of departments 
+
+select department_name
+from departments
+
+
+
+--Q3 name of course and start date 
+
+select course_name,start_date
+from training_courses
+
+
+
+--Q1 count of employee and average salary 
+
+select  d.department_name ,avg(salary) 'Average salary' , count(employee_id) 'Employee number'
+from employees e inner join departments d
+on e.department_id = d.department_id
+group by d.department_name 
+
+
+
+--Q2 name of instructor and course for learining
+
+select i.first_name, i.last_name, t.course_name
+from instructors i join training_courses t
+on i.instructor_id = t.instructor_id
+
+
+
+--Q3 name of employees and departments  and calculating average salary for each departments
+
+
+select e.first_name, e.last_name, d.department_name,
+(select avg(e2.salary)
+from employees e2
+where e2.department_id = e.department_id)as 'Average salary'
+from employees e
+inner join departments d
+on e.department_id = d.department_id;
+
+
+
+--Q4 count of vactions (Approved and Rejected)
+
+select e.first_name, e.last_name, l.status, count(status) as 'Number of employee vacations'
+from leave_requests l inner join employees e
+on l.employee_id = e.employee_id
+where status in ('Approved', 'Rejected')
+group by e.first_name, e.last_name, l.status;
+
+
+
+
+--Q5 count of employees of each departments
+
+select d.department_name ,count(employee_id) 'employee number'
+from departments d join employees e
+on d.department_id = e.department_id
+group by d.department_name
+
+
+
+
+--Q6 name of instructor and count training course 
+
+select i.first_name,  i.last_name, count(course_id)'Number of courses'
+from instructors i join training_courses t
+on i.instructor_id = t.instructor_id
+group by i.first_name, i.last_name
+
+
+
+--Q7  name of employees and name of departments work
+
+select e.first_name, e.last_name, d.department_name
+from employees e join departments d
+on e.department_id = d.department_id
+
+
+
+
+
+--Q8 Subquery name of employees to work in departments greater than 3 of employees
+
+select e.first_name, e.last_name, d.department_name
+from employees e join departments d
+on e.department_id = d.department_id
+where e.department_id in (select department_id From employees 
+group by department_id
+having count(*) > 3 )
+
+
+
+
+--Q9 SubQuery name of employees to have same departments of work
+
+select e.first_name, e.last_name, d.department_name 
+from employees e join departments d
+on e.department_id = d.department_id
+where e.department_id in(select department_id from employees
+group by department_id
+having count(*) > 1 )
+
+
+
+
+--Q10 name of training course she train ('Sarah Johnson')
+
+select t.course_name , i.first_name , i.last_name
+from training_courses t join instructors i
+on t.instructor_id = i.instructor_id
+where i.first_name = 'Sarah' and i.last_name = 'Johnson'
+
+
+
+
+--Q11 information about  employees don't have manager
+
+select *
+from employees
+where manager_id is null
+
+
+
+--Q12 name of departments and total salary for each employees departments 
+
+select department_name, sum(salary) 'Total salaries'
+from departments d join employees e
+on d.department_id = e.department_id
+group by department_name
+
+
+
+--Q13 name of departments and employees with the highst salary in the departments
+
+select d.department_name, e.first_name, e.last_name, e.salary
+from departments d inner join employees e
+on e.department_id = d.department_id
+where e.salary = (select max(e2.salary)
+from employees e2
+where e2.department_id = e.department_id)
+
+
+
+--Q14 count of training course after start date ('2023-12-01')
+
+select count(*)'number of courses'
+from training_courses
+where start_date > '2023-12-01'
+
+
+
+--Q15 SubQuery the highest salary employees in each departments
+
+select e.first_name, e.last_name, d.department_name, e.salary 'highest salary'
+from employees e join departments d
+on e.department_id = d.department_id
+where e.salary = (select max(e2.salary) 
+from employees e2
+where e2.department_id = e.department_id)
+
+
+
+--select all column from table employees
+
+select *
+from employees
+
+
+
+--select all column from table departments
+
+select *
+from departments
+
+
+
+--select all column from table training_courses
+
+select *
+ from training_courses
+
+
+
+--select all column from table instructors
+
+ select *
+ from instructors
+
+
+
+ --select all column from table leave_requests
+
+ select *
+ from leave_requests

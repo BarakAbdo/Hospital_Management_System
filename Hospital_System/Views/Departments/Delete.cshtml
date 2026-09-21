@@ -6,6 +6,9 @@
 <h1>Delete Department</h1>
 <div class="container">
 	<form method="post" asp-action="Delete">
+
+		<input type="hidden" asp-for="UID" />
+
 		<div class="form-group">
 			<label class="control-label">Name</label><br>
 			<input asp-for="Name" class="form-control" readonly /><br>

@@ -1,4 +1,6 @@
-﻿@model Department
+﻿@using Hospital_System.Dtos.DepartmentDtos
+@using Hospital_System.Models
+@model UpdateDepartmentDto
 @{
 	ViewData["Title"] = "Edit Department";
 }
@@ -6,6 +8,10 @@
 <h1>Edit Department</h1>
 <div class="container">
 	<form method="post" asp-action="Edit">
+
+		<input type="hidden" asp-for="Id" />
+		<input type="hidden" asp-for="UID" />
+
 		<div class="form-group">
 			<label class="control-label">Name</label><br>
 			<input asp-for="Name" class="form-control"/><br>

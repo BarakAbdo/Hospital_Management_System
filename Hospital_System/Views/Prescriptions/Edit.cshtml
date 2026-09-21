@@ -1,10 +1,15 @@
-﻿@model Prescription
+﻿@using Hospital_System.Dtos.PrescriptionsDtos
+@model UpdatePrescriptionDto
 @{
 	ViewData["Title"] = "Edit Prescription";
 }
 <h1> Edit Prescription</h1>
 <div class="container">
 	<form method="post" asp-action="Edit">
+
+		<input type="hidden" asp-for="Id" />
+		<input type="hidden" asp-for="UID" />
+
 		<div class="form-group">
 			<label class="control-label">Dosage</label><br>
 			<input asp-for="Dosage" class="form-control" /><br>

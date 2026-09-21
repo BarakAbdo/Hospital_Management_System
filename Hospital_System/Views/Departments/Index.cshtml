@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Department>
+﻿@using Hospital_System.Dtos.DepartmentDtos
+@model IEnumerable<DepartmentDto>
 @{
 	ViewData["Title"] = "Department Management";
 }
@@ -16,6 +17,7 @@
 			<tr>
 				<th>ID</th>
 				<th>Name</th>
+
 				<th>Location</th>
 				<th>Action</th>
 			</tr>
@@ -28,8 +30,9 @@
 				<td>@Department.Name</td>
 				<td>@Department.Location</td>
 				<td>
-					<a asp-action= "Edit" asp-route-Id ="@Department.Id" class="btn btn-sm btn-primary">Edit</a>
-						<a asp-action="Delete" asp-route-Id="@Department.Id" class="btn btn-sm btn-danger">Delete</a>
+						<a asp-action="Edit" asp-route-uid="@Department.UID" class="btn btn-sm btn-primary">Edit</a>
+						<a asp-action="Delete" asp-route-uid="@Department.UID" class="btn btn-sm btn-danger">Delete</a>
+
 				</td>
 			</tr>	
 			}

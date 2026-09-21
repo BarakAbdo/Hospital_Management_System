@@ -5,6 +5,7 @@ namespace Hospital_Management_System.Dtos
     {
 
         public int UserId { get; set; }
+        public string UserUid { get; set; } 
         public string? UserName { get; set; }
 
         public List<RoleCheckVM>? Roles { get; set; }
@@ -13,6 +14,7 @@ namespace Hospital_Management_System.Dtos
     public class RoleCheckVM
     {
         public int RoleId { get; set; }
+        public string RoleUid { get; set; } 
         public string? RoleName { get; set; }
 
         public bool IsSelected { get; set; }

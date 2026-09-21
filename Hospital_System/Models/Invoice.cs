@@ -10,9 +10,12 @@ namespace Hospital_System.Models
         public decimal Amount { get; set; }
         public DateTime Date { get; set; }
         public string? Status { get; set; }
+
+        public string UID { get; set; } = Guid.NewGuid().ToString();
+
         [ForeignKey("Patient")]
         public int? PatientId { get; set; }//Foregin key property
-        public Patient? Patient { get; set; }//Navigation Property
+        public Patient? Patients { get; set; }//Navigation Property
         
 
     }

@@ -10,6 +10,7 @@
         public string? Username { get; set; }
         public string? PasswordHash { get; set; }
 
+        public string UID { get; set; } = Guid.NewGuid().ToString();
         public ICollection<Role>? Roles { get; set; } = new List<Role>(); // Navigation property
 
     }

@@ -8,7 +8,9 @@ namespace Hospital_System.Models
         public string? Diagnosis { get; set; }
         public string? Notes { get; set; }
 
-        [ForeignKey("Paient")]
+        public string UID { get; set; } = Guid.NewGuid().ToString();
+
+        [ForeignKey("Patient")]
         public int? PatientId { get; set; }
         public Patient? Patient { get; set; }
 

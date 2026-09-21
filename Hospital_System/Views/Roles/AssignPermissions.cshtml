@@ -24,9 +24,10 @@
             <form asp-action="AssignPermissions" method="post">
 
                 <!-- Role Id -->
+
                 <input type="hidden"
-                       name="roleId"
-                       value="@Model.Id" />
+                       name="uid"
+                       value="@Model.UID" />
 
 
                 @foreach (var permission in allPermissions)

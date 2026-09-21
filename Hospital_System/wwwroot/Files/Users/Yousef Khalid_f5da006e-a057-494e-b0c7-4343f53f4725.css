@@ -1,0 +1,79 @@
+
+        /* تنسيق الصفحة كاملة */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f4f6;
+            margin: 0;
+            color: #222;
+        }
+
+        /* رأس المدونة */
+        header {
+            background-color: #111827;
+            color: white;
+            text-align: center;
+            padding: 30px;
+        }
+
+        /* عنوان المدونة */
+        header h1 {
+            margin: 0;
+            font-size: 32px;
+        }
+
+        /* المحتوى الرئيسي */
+        main {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        /* كل مقالة */
+        article {
+            background-color: white;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        /* عنوان المقالة */
+        article h2 {
+            margin-top: 0;
+            color: #111827;
+        }
+
+        /* تاريخ النشر */
+        small {
+            color: #777;
+            display: block;
+            margin-bottom: 15px;
+        }
+
+        /* نص المقالة */
+        article p {
+            line-height: 1.8;
+            font-size: 17px;
+        }
+
+        /* رابط قراءة المزيد */
+        a {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* عند تمرير الماوس على الرابط */
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* تذييل الصفحة */
+        footer {
+            text-align: center;
+            background-color: #111827;
+            color: white;
+            padding: 20px;
+            margin-top: 30px;
+        }
+  

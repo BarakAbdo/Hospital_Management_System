@@ -1,5 +1,7 @@
 ﻿@using Hospital_Management_System.Models
-@model IEnumerable<Permission>
+@using Hospital_System.Dtos.PermissionsDtos
+
+@model IEnumerable<PermissionDto>
 
 @{
     ViewData["Title"] = "Permissions";
@@ -179,6 +181,10 @@
                            value="@Permission.Id" />
 
 
+                    <input type="hidden"
+                        name="UID" 
+                        value="@Permission.UID" />
+
                     <div class="modal-header">
 
                         <h5 class="modal-title">
@@ -235,7 +241,6 @@
     </div>
 
 
-
     <!-- ========================= -->
     <!-- DELETE MODAL -->
     <!-- ========================= -->
@@ -248,12 +253,11 @@
 
             <div class="modal-content">
 
-                <form asp-action="Delete" method="post">
+                <form asp-controller="Permissions" asp-action="Delete" method="post">
 
                     <input type="hidden"
-                           name="id"
-                           value="@Permission.Id" />
-
+                           name="UID"
+                           value="@Permission.UID" />
 
                     <div class="modal-header">
 
@@ -268,7 +272,6 @@
 
                     </div>
 
-
                     <div class="modal-body">
 
                         <p>
@@ -277,7 +280,6 @@
                         </p>
 
                     </div>
-
 
                     <div class="modal-footer">
 

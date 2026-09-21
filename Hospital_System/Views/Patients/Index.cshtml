@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Patient>
+﻿@using Hospital_System.Dtos.PatientsDtos
+@model IEnumerable<PatientDto>
 
 @{
     ViewData["Title"] = "Patient Management";
@@ -11,7 +12,7 @@
 
 <div class="container mt-2">
     <div class="mb-3 text-end">
-        <a asp-action="Create" class="btn btn-primary">Create new Doctor</a>
+        <a asp-action="Create" class="btn btn-primary">Create new Patient</a>
     </div>
     <table class="table table-primary table-hover">
         <thead>
@@ -35,8 +36,10 @@
                     <td>@Patient.Phone</td>
                     <td>@Patient.DateOfBirth</td>
                     <td>
-                        <a asp-action="Edit" asp-route-Id="@Patient.Id" class="btn btn-sm btn-primary">Edit</a>
-                        <a asp-action="Delete" asp-route-Id="@Patient.Id" class="btn btn-sm btn-danger">Delete</a>
+                        <a asp-action="Edit" asp-route-uid="@Patient.UID" class="btn btn-sm btn-primary">Edit</a>
+                        <a asp-action="Delete" asp-route-uid="@Patient.UID" class="btn btn-sm btn-danger">Delete</a>
+                        <input type="hidden" name="UID" value="@Patient.UID" />
+                        <a asp-controller="Patients" asp-action="ManageFiles" asp-route-uid="@Patient.UID" class="btn btn-warning">Files</a>
                     </td>
                 </tr>
             }

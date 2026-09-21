@@ -5,6 +5,10 @@
 <h1> Delete Prescription</h1>
 <div class="container">
 	<form method="post" asp-action="Delete">
+
+		<input asp-for="UID" hidden />
+		<input asp-for="Id" hidden />
+
 		<div class="form-group">
 			<label class="control-label">Dosage</label><br>
 			<input asp-for="Dosage" class="form-control" readonly/><br>

@@ -1,16 +1,23 @@
 ﻿using Hospital_System.Data;
+using Hospital_System.Repositories.AccountRepo;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hospital_Management_System.Controllers
 {
     public class AccountsController : Controller
     {
-        private readonly AppDbContext _db;
-
-        public AccountsController(AppDbContext db)
+        private readonly IAccountRepository _repo;
+        public AccountsController(IAccountRepository repo)
         {
-            _db = db;
+            _repo = repo;
         }
+
+        //private readonly AppDbContext _db;
+
+        //public AccountsController(AppDbContext db)
+        //{
+        //    _db = db;
+        //}
 
         public IActionResult Login()
         {
@@ -21,10 +28,11 @@ namespace Hospital_Management_System.Controllers
         [HttpPost]
         public IActionResult Login(string username, string password)
         {
-            var user = _db.Users.FirstOrDefault(u => u.Username == username);
+            var user = _repo.GetByUsername(username);
+            //var user = _db.Users.FirstOrDefault(u => u.Username == username);
             //Hash the provided password and compare it with the stored hash
 
-            if (user != null && BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
+            if (user != null && !string.IsNullOrEmpty(user.PasswordHash) && BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
             {
 
                 // User authenticated successfully

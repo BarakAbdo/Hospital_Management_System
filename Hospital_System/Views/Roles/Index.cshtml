@@ -1,5 +1,7 @@
 ﻿@using Hospital_Management_System.Models
-@model IEnumerable<Role>
+@using Hospital_System.Dtos.RolesDtos
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model IEnumerable<RoleDto>
 
 @{
     ViewData["Title"] = "Roles";
@@ -58,7 +60,7 @@
                     <td>
                             <a asp-controller="Roles"
                            asp-action="AssignPermissions"
-                           asp-route-roleId="@Role.Id"
+                           asp-route-uid="@Role.UID"
                                class="btn btn-info">
                             View Permissions
                         </a>
@@ -188,6 +190,9 @@
                            name="Id"
                            value="@Role.Id" />
 
+                    <input type="hidden"
+                        name="UID" 
+                        value="@Role.UID" />
 
                     <div class="modal-header">
 
@@ -261,8 +266,13 @@
                 <form asp-action="Delete" method="post">
 
                     <input type="hidden"
-                           name="id"
+                           name="Id"
                            value="@Role.Id" />
+
+
+                    <input type="hidden" 
+                        name="UID" 
+                        value="@Role.UID" />
 
 
                     <div class="modal-header">

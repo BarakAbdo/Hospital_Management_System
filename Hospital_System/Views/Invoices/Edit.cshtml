@@ -1,10 +1,15 @@
-﻿@model Invoice
+﻿@using Hospital_System.Dtos.InvoicesDtos
+@model UpdateInvoiceDto
 @{
 	ViewData["Title"] = "Edit Invoice";
 }
 <h1> Edit Invoice</h1>
 <div class="container">
 	<form method="post" asp-action="Edit">
+
+		<input type="hidden" asp-for="Id" />
+		<input type="hidden" asp-for="UID" />
+
 		<div class="form-group">
 			<label class="control-label">Amount</label><br>
 			<input asp-for="Amount" class="form-control" /><br>

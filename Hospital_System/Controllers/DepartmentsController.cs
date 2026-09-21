@@ -1,6 +1,12 @@
 ﻿using Hospital_System.Data;
+using Hospital_System.Dtos.AppointmentsDtos;
+using Hospital_System.Dtos.DepartmentDtos;
 using Hospital_System.Models;
+using Hospital_System.Repositories.AppointmentRepo;
+using Hospital_System.Repositories.DepartmentRepo;
 using Microsoft.AspNetCore.Mvc;
+using static Hospital_System.Dtos.DepartmentDtos.DepartmentDto;
+
 
 namespace Hospital_System.Controllers
 {
@@ -8,64 +14,148 @@ namespace Hospital_System.Controllers
     {
         //Dependency Injection 
 
-        private readonly AppDbContext _db;
-        public DepartmentsController(AppDbContext db)
+        private readonly IDepartmentRepository _repo;
+        public DepartmentsController(IDepartmentRepository repo)
         {
-            _db = db;
+            _repo = repo;
 
         }
 
         [HttpGet]
         public IActionResult Index()
         {
-            //Entity Framework Approach      
-            IEnumerable<Department> departments = _db.Departments.ToList();
-            return View(departments);
+            //IEnumerable<Department> departments = _repo.GetAll();
+            var departments = _repo.GetAll().Select(d => new DepartmentDto
+            {
+                Id = d.Id,
+                UID = d.UID,
+                Name = d.Name,
+                Location = d.Location
+            }).ToList();
 
+            return View(departments);
         }
 
         [HttpGet]
-        public IActionResult Create() 
+        public IActionResult Create()
         {
             return View();
         }
+
         [HttpPost]
-        public IActionResult Create(Department department) 
+        public IActionResult Create(CreateDepartmentDto department, IFormFile image)
         {
-            if (ModelState.IsValid) 
+
+            if (ModelState.IsValid)
             {
-                _db.Departments.Add(department);
-                _db.SaveChanges();
+                //Mapping
+                var dept = new Department
+                {
+                    UID = Guid.NewGuid().ToString(),
+                    Name = department.Name,
+                    Location = department.Location,
+                };
+
+                if (image != null)
+                {
+                    dept.ImageUrl = UploadImage(image);
+                }
+
+                _repo.Add(dept);
+                _repo.Save();
+
+                //_db.Departments.Add(dept);
+                //_db.SaveChanges();
                 return RedirectToAction("Index");
             }
             return View(department);
         }
+
         [HttpGet]
-        public IActionResult Edit(int Id) 
+        public IActionResult Edit(string uid)
         {
-            var department = _db.Departments.Find(Id);
-            if (department == null) 
+            var department = _repo.GetByUId(uid);
+
+            //var department = _db.Departments.Find(Id);
+            if (department == null)
             {
                 return NotFound();
             }
-            return View(department);
+
+            var update = new UpdateDepartmentDto
+            {
+                Id = department.Id,
+                UID = department.UID,
+                Name = department.Name,
+                Location = department.Location
+
+
+            };
+            return View(update);
         }
         [HttpPost]
-        public IActionResult Edit(Department department) 
+        public IActionResult Edit(UpdateDepartmentDto department)
         {
-            if (ModelState.IsValid) 
+            if (ModelState.IsValid)
             {
-                _db.Departments.Update(department);
-                _db.SaveChanges();
+                if (department.UID == null)
+                    department.UID = Guid.NewGuid().ToString();
+                var dept = new Department
+                {
+                    UID = department.UID,
+                    Name = department.Name,
+                    Location = department.Location,
+                    Id = department.Id
+                };
+
+                _repo.Update(dept);
+                _repo.Save();
+
+                //_db.Departments.Update(dept);
+                //_db.SaveChanges();
                 return RedirectToAction("Index");
             }
             return View(department);
         }
-        [HttpGet]
-        public IActionResult Delete(int Id) 
+
+
+        private string UploadImage(IFormFile image)
         {
-            var department = _db.Departments.Find(Id);
-            if (department == null) 
+            string fileName = Guid.NewGuid().ToString()
+                              + Path.GetExtension(image.FileName);
+
+
+            string folderPath = Path.Combine(
+      Directory.GetCurrentDirectory(),
+      "wwwroot",
+      "images",
+      "Departments"
+  );
+
+            Directory.CreateDirectory(folderPath);
+
+
+            string filePath = Path.Combine(
+          folderPath,
+          fileName);
+
+
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                image.CopyTo(stream);
+            }
+
+            return "/images/Departments/" + fileName;
+        }
+
+
+        [HttpGet]
+        public IActionResult Delete(string uid)
+        {
+            var department = _repo.GetByUId(uid);
+            //var department = _repo.Departments.FirstOrDefault(d=>d.UID == uid);
+            if (department == null)
             {
                 return NotFound();
             }
@@ -73,15 +163,21 @@ namespace Hospital_System.Controllers
         }
 
         [HttpPost]
-        public IActionResult Delete(Department department) 
+        public IActionResult Delete(Department department)
         {
-            if (ModelState.IsValid) 
+            var oldDepartment = _repo.GetByUId(department.UID);
+            //var oldDepartment= _repo.Departments.FirstOrDefault(a => a.UID == department.UID);
+            if (oldDepartment == null)
             {
-                _db.Departments.Remove(department);
-                _db.SaveChanges();
-                return RedirectToAction("Index");
+                return NotFound();
             }
-            return View(department);
+
+            _repo.Delete(oldDepartment);
+                _repo.Save();
+
+                //_db.Departments.Remove(department);
+                //_db.SaveChanges();
+                return RedirectToAction("Index");
         }
     }
 }

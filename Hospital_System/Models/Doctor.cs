@@ -11,7 +11,8 @@ namespace Hospital_System.Models
         public string? Name { get; set; } 
         public string? Specialization { get; set; }
         public string? Phone { get; set; }
-        
+        public string UID { get; set; } = Guid.NewGuid().ToString();
+
         [ForeignKey("Department")]
         public int DepartmentId { get; set; } //Foregin key property
         public Department? Department { get; set; }//Navigation Property

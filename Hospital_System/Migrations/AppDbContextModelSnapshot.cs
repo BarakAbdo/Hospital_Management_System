@@ -34,9 +34,13 @@ namespace Hospital_System.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Permissions", (string)null);
+                    b.ToTable("Permissions");
                 });
 
             modelBuilder.Entity("Hospital_Management_System.Models.PermissionRole", b =>
@@ -51,7 +55,7 @@ namespace Hospital_System.Migrations
 
                     b.HasIndex("PermissionId");
 
-                    b.ToTable("PermissionRoles", (string)null);
+                    b.ToTable("PermissionRoles");
                 });
 
             modelBuilder.Entity("Hospital_Management_System.Models.Role", b =>
@@ -66,9 +70,13 @@ namespace Hospital_System.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Roles", (string)null);
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("Hospital_Management_System.Models.User", b =>
@@ -91,12 +99,16 @@ namespace Hospital_System.Migrations
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Username")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Hospital_Management_System.Models.UserRole", b =>
@@ -111,7 +123,7 @@ namespace Hospital_System.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("RoleUsers", (string)null);
+                    b.ToTable("RoleUsers");
                 });
 
             modelBuilder.Entity("Hospital_System.Models.Appointment", b =>
@@ -137,13 +149,48 @@ namespace Hospital_System.Migrations
                     b.Property<string>("Time")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("DoctorId");
 
                     b.HasIndex("PatientId");
 
-                    b.ToTable("Appointments", (string)null);
+                    b.ToTable("Appointments");
+                });
+
+            modelBuilder.Entity("Hospital_System.Models.AppointmentFile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("AppointmentId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FileURL")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Time")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppointmentId");
+
+                    b.ToTable("AppointmentFiles");
                 });
 
             modelBuilder.Entity("Hospital_System.Models.Department", b =>
@@ -154,15 +201,22 @@ namespace Hospital_System.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Location")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Departments", (string)null);
+                    b.ToTable("Departments");
                 });
 
             modelBuilder.Entity("Hospital_System.Models.Doctor", b =>
@@ -185,11 +239,41 @@ namespace Hospital_System.Migrations
                     b.Property<string>("Specialization")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("DepartmentId");
 
-                    b.ToTable("Doctors", (string)null);
+                    b.ToTable("Doctors");
+                });
+
+            modelBuilder.Entity("Hospital_System.Models.DoctorFile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("DoctorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FileURL")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DoctorId");
+
+                    b.ToTable("DoctorFiles");
                 });
 
             modelBuilder.Entity("Hospital_System.Models.Invoice", b =>
@@ -212,11 +296,41 @@ namespace Hospital_System.Migrations
                     b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("PatientId");
 
-                    b.ToTable("Invoices", (string)null);
+                    b.ToTable("Invoices");
+                });
+
+            modelBuilder.Entity("Hospital_System.Models.InvoiceFile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("FileURL")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("InvoiceId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InvoiceId");
+
+                    b.ToTable("InvoiceFiles");
                 });
 
             modelBuilder.Entity("Hospital_System.Models.MedicalRecord", b =>
@@ -239,13 +353,43 @@ namespace Hospital_System.Migrations
                     b.Property<int?>("PatientId")
                         .HasColumnType("int");
 
+                    b.Property<string>("UID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("DoctorId");
 
                     b.HasIndex("PatientId");
 
-                    b.ToTable("MedicalRecords", (string)null);
+                    b.ToTable("MedicalRecords");
+                });
+
+            modelBuilder.Entity("Hospital_System.Models.MedicalRecordFile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("FileURL")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("MedicalRecordId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Notes")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MedicalRecordId");
+
+                    b.ToTable("MedicalRecordFiles");
                 });
 
             modelBuilder.Entity("Hospital_System.Models.Medication", b =>
@@ -268,9 +412,39 @@ namespace Hospital_System.Migrations
                     b.Property<int>("Stock")
                         .HasColumnType("int");
 
+                    b.Property<string>("UID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Medications", (string)null);
+                    b.ToTable("Medications");
+                });
+
+            modelBuilder.Entity("Hospital_System.Models.MedicationFile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("FileURL")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("MedicationId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MedicationId");
+
+                    b.ToTable("MedicationFiles");
                 });
 
             modelBuilder.Entity("Hospital_System.Models.Patient", b =>
@@ -293,9 +467,39 @@ namespace Hospital_System.Migrations
                     b.Property<string>("Phone")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Patients", (string)null);
+                    b.ToTable("Patients");
+                });
+
+            modelBuilder.Entity("Hospital_System.Models.PatientFile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("FileURL")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PatientId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PatientId");
+
+                    b.ToTable("PatientFiles");
                 });
 
             modelBuilder.Entity("Hospital_System.Models.Prescription", b =>
@@ -321,6 +525,10 @@ namespace Hospital_System.Migrations
                     b.Property<int?>("PatientId")
                         .HasColumnType("int");
 
+                    b.Property<string>("UID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("DoctorId");
@@ -329,7 +537,59 @@ namespace Hospital_System.Migrations
 
                     b.HasIndex("PatientId");
 
-                    b.ToTable("Prescriptions", (string)null);
+                    b.ToTable("Prescriptions");
+                });
+
+            modelBuilder.Entity("Hospital_System.Models.PrescriptionFile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Dosage")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FileURL")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PrescriptionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PrescriptionId");
+
+                    b.ToTable("PrescriptionFiles");
+                });
+
+            modelBuilder.Entity("Hospital_System.Models.UserFile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("FileURL")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserFiles");
                 });
 
             modelBuilder.Entity("PermissionRole", b =>
@@ -344,7 +604,7 @@ namespace Hospital_System.Migrations
 
                     b.HasIndex("RolesId");
 
-                    b.ToTable("PermissionRole", (string)null);
+                    b.ToTable("PermissionRole");
                 });
 
             modelBuilder.Entity("RoleUser", b =>
@@ -359,7 +619,7 @@ namespace Hospital_System.Migrations
 
                     b.HasIndex("UsersId");
 
-                    b.ToTable("RoleUser", (string)null);
+                    b.ToTable("RoleUser");
                 });
 
             modelBuilder.Entity("Hospital_Management_System.Models.PermissionRole", b =>
@@ -415,6 +675,15 @@ namespace Hospital_System.Migrations
                     b.Navigation("Patient");
                 });
 
+            modelBuilder.Entity("Hospital_System.Models.AppointmentFile", b =>
+                {
+                    b.HasOne("Hospital_System.Models.Appointment", "Appointments")
+                        .WithMany()
+                        .HasForeignKey("AppointmentId");
+
+                    b.Navigation("Appointments");
+                });
+
             modelBuilder.Entity("Hospital_System.Models.Doctor", b =>
                 {
                     b.HasOne("Hospital_System.Models.Department", "Department")
@@ -426,13 +695,35 @@ namespace Hospital_System.Migrations
                     b.Navigation("Department");
                 });
 
+            modelBuilder.Entity("Hospital_System.Models.DoctorFile", b =>
+                {
+                    b.HasOne("Hospital_System.Models.Doctor", "Doctors")
+                        .WithMany()
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Doctors");
+                });
+
             modelBuilder.Entity("Hospital_System.Models.Invoice", b =>
                 {
-                    b.HasOne("Hospital_System.Models.Patient", "Patient")
+                    b.HasOne("Hospital_System.Models.Patient", "Patients")
                         .WithMany("invoices")
                         .HasForeignKey("PatientId");
 
-                    b.Navigation("Patient");
+                    b.Navigation("Patients");
+                });
+
+            modelBuilder.Entity("Hospital_System.Models.InvoiceFile", b =>
+                {
+                    b.HasOne("Hospital_System.Models.Invoice", "Invoices")
+                        .WithMany()
+                        .HasForeignKey("InvoiceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Invoices");
                 });
 
             modelBuilder.Entity("Hospital_System.Models.MedicalRecord", b =>
@@ -448,6 +739,39 @@ namespace Hospital_System.Migrations
                     b.Navigation("Doctor");
 
                     b.Navigation("Patient");
+                });
+
+            modelBuilder.Entity("Hospital_System.Models.MedicalRecordFile", b =>
+                {
+                    b.HasOne("Hospital_System.Models.MedicalRecord", "MedicalRecords")
+                        .WithMany()
+                        .HasForeignKey("MedicalRecordId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("MedicalRecords");
+                });
+
+            modelBuilder.Entity("Hospital_System.Models.MedicationFile", b =>
+                {
+                    b.HasOne("Hospital_System.Models.Medication", "Medications")
+                        .WithMany()
+                        .HasForeignKey("MedicationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Medications");
+                });
+
+            modelBuilder.Entity("Hospital_System.Models.PatientFile", b =>
+                {
+                    b.HasOne("Hospital_System.Models.Patient", "patients")
+                        .WithMany()
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("patients");
                 });
 
             modelBuilder.Entity("Hospital_System.Models.Prescription", b =>
@@ -469,6 +793,28 @@ namespace Hospital_System.Migrations
                     b.Navigation("Medication");
 
                     b.Navigation("Patient");
+                });
+
+            modelBuilder.Entity("Hospital_System.Models.PrescriptionFile", b =>
+                {
+                    b.HasOne("Hospital_System.Models.Prescription", "prescriptions")
+                        .WithMany()
+                        .HasForeignKey("PrescriptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("prescriptions");
+                });
+
+            modelBuilder.Entity("Hospital_System.Models.UserFile", b =>
+                {
+                    b.HasOne("Hospital_Management_System.Models.User", "Users")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("PermissionRole", b =>

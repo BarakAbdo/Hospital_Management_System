@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Doctor>
+﻿@using Hospital_System.Dtos.DoctorsDtos
+@model IEnumerable<DoctorDto>
 
 @{
     ViewData["Title"] = "Doctor Management";
@@ -33,10 +34,11 @@
                     <td>@Doctor.Name</td>
                     <td>@Doctor.Specialization</td>
                     <td>@Doctor.Phone</td>
-                    <td>@Doctor.Department?.Name</td>
+                    <td>@Doctor.DepartmentName</td>
                     <td>
-                        <a asp-action="Edit" asp-route-Id="@Doctor.Id" class="btn btn-sm btn-primary">Edit</a>
-                        <a asp-action="Delete" asp-route-Id="@Doctor.Id" class="btn btn-sm btn-danger">Delete</a>
+                        <a asp-action="Edit" asp-route-uid="@Doctor.UID" class="btn btn-sm btn-primary">Edit</a>
+                        <a asp-action="Delete" asp-route-uid="@Doctor.UID" class="btn btn-sm btn-danger">Delete</a>
+                        <a asp-controller="Doctors" asp-action="ManageFiles" asp-route-uid="@Doctor.UID" class="btn btn-warning">Files</a>
                     </td>
 
                 </tr>

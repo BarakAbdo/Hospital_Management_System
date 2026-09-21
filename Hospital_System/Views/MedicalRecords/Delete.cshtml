@@ -5,6 +5,9 @@
 <h1> Delete MedicalRecord</h1>
 <div class="container">
 	<form method="post" asp-action="Delete">
+
+		<input type="hidden" asp-for="UID" />
+
 		<div class="form-group">
 			<label class="control-label">Diagnosis</label><br>
 			<input asp-for="Diagnosis" class="form-control" readonly /><br>

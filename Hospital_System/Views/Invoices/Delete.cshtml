@@ -5,6 +5,10 @@
 <h1> Delete Invoice</h1>
 <div class="container">
 	<form method="post" asp-action="Delete">
+
+		<input asp-for="UID" hidden />
+		<input asp-for="Id" hidden />
+
 		<div class="form-group">
 			<label class="control-label">Amount</label><br>
 			<input asp-for="Amount" class="form-control" readonly /><br>
@@ -16,7 +20,7 @@
 			<input asp-for="Status" class="form-control" readonly /><br>
 
 			<label class="control-label">Patient</label><br>
-			<input asp-for="Patient.Name" class="form-control" readonly /><br>
+			<input asp-for="Patients.Name" class="form-control" readonly /><br>
 
 		</div>
 		<br>

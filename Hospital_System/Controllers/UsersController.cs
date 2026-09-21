@@ -1,47 +1,90 @@
-﻿using Hospital_Management_System.Dtos;
+﻿ using Hospital_Management_System.Dtos;
 using Hospital_Management_System.Models;
 using Hospital_System.Data;
+using Hospital_System.Dtos.RolesDtos;
+using Hospital_System.Dtos.UsersDtos;
+using Hospital_System.Models;
+using Hospital_System.Repositories.MedicalRecordRepo;
+using Hospital_System.Repositories.UserRepo;
 using Microsoft.AspNetCore.Mvc;
+using System.Drawing;
 
 namespace Hospital_Management_System.Controllers
 {
     public class UsersController : Controller
     {
-        private readonly AppDbContext _db;
 
-        public UsersController(AppDbContext db)
+        private readonly IUserRepository _repo;
+
+        public UsersController(IUserRepository repo)
         {
-            _db = db;
+            _repo = repo;
         }
+
+        //private readonly AppDbContext _db;
+
+        //public UsersController(AppDbContext db)
+        //{
+        //    _db = db;
+        //}
+
 
         public IActionResult Index()
         {
-            IEnumerable<User> users = _db.Users.ToList();
-            return View(users);
+
+            //IEnumerable<User> users = _repo.GetAll();
+            var user = _repo.GetAll().Select(u => new UserDto
+            {
+                Id = u.Id,
+                UID = u.UID,
+                Name = u.Name,
+                Email = u.Email,
+                Username = u.Username
+            }).ToList();
+
+
+            return View(user);
         }
 
         // =========================
         // Create
         // =========================
         [HttpPost]
-        public IActionResult Create(User user)
+        public IActionResult Create(CreateUserDto userDto)
         {
             if (ModelState.IsValid)
             {
-                user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(user.Password);
-                _db.Users.Add(user);
-                _db.SaveChanges();
+                var use = new User
+                {
+                    UID = Guid.NewGuid().ToString(),
+                    Name = userDto.Name,
+                    Email = userDto.Email,
+                    Username = userDto.Username,
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword(userDto.Password)
+                };
+
+                _repo.Add(use);
+                _repo.Save();
+
+                //_db.Users.Add(use);
+                //_db.SaveChanges();
+
+                return RedirectToAction("Index");
             }
-            return RedirectToAction("Index");
+
+            return View(userDto);
         }
 
         // =========================
         // Edit
         // =========================
         [HttpPost]
-        public IActionResult Edit(User user)
+        public IActionResult Edit(UpdateUserDto user)
         {
-            var oldUser = _db.Users.Find(user.Id);
+
+            var oldUser = _repo.GetById(user.Id);
+            if (user.UID == null)
+                user.UID = Guid.NewGuid().ToString();
 
             if (oldUser == null)
             {
@@ -51,6 +94,8 @@ namespace Hospital_Management_System.Controllers
             oldUser.Name = user.Name;
             oldUser.Email = user.Email;
             oldUser.Username = user.Username;
+            
+
 
             // Change password only if user entered a new password
             if (!string.IsNullOrEmpty(user.Password))
@@ -58,33 +103,63 @@ namespace Hospital_Management_System.Controllers
                 oldUser.PasswordHash =
                     BCrypt.Net.BCrypt.HashPassword(user.Password);
             }
-
-            _db.SaveChanges();
+            _repo.Update(oldUser);
+            _repo.Save();
+            //_db.SaveChanges();
 
             return RedirectToAction("Index");
+        }
+
+        private string UploadImage(IFormFile image) 
+        {
+        string fileName = Guid.NewGuid().ToString()
+                + Path.GetExtension(image.FileName);
+
+            string folderPath = Path.Combine(
+           Directory.GetCurrentDirectory(),
+           "wwwroot",
+           "images",
+           "users"
+                );
+
+            Directory.CreateDirectory(folderPath);
+
+            string filePath = Path.Combine(
+                folderPath, 
+                fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            { 
+            image.CopyTo(stream);
+            }
+            return "/images/users/" + fileName;
         }
 
         // =========================
         // Delete
         // =========================
         [HttpPost]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(User user)
         {
-            var user = _db.Users.Find(id);
-            if (user != null)
+            var oldUser = _repo.GetByUId(user.UID);
+            if (oldUser == null)
             {
-                _db.Users.Remove(user);
-                _db.SaveChanges();
+                return NotFound();
+
+                //_db.Users.Remove(user);
+                //_db.SaveChanges();
             }
+            _repo.Delete(oldUser);
+            _repo.Save();
             return RedirectToAction("Index");
         }
 
 
 
         [HttpGet]
-        public IActionResult ManageRoles(int id)
+        public IActionResult ManageRoles(string uid)
         {
-            var user = _db.Users.Find(id);
+            var user = _repo.GetByUId(uid);
 
             if (user == null)
             {
@@ -92,11 +167,11 @@ namespace Hospital_Management_System.Controllers
             }
 
             // جميع الصلاحيات
-            var roles = _db.Roles.ToList();
+            var roles = _repo.Roles.ToList();
 
             // الصلاحيات الموجودة بالفعل للمستخدم
-            var userRoleIds = _db.RoleUsers
-                .Where(x => x.UserId == id)
+            var userRoleIds = _repo.RoleUsers
+                .Where(x => x.UserId == user.Id)
                 .Select(x => x.RoleId)
                 .ToList();
 
@@ -122,39 +197,112 @@ namespace Hospital_Management_System.Controllers
         [HttpPost]
         public IActionResult ManageRoles(UserRolesVM model)
         {
-            var user = _db.Users.Find(model.UserId);
+            var user = _repo.GetById(model.UserId);
 
             if (user == null)
             {
                 return NotFound();
             }
 
-            // Get old roles
-            var oldRoles = _db.RoleUsers
-                .Where(x => x.UserId == model.UserId)
-                .ToList();
+            
+            var selectedRoleIds = model.Roles?
+                .Where(r => r.IsSelected)
+                .Select(r => r.RoleId)
+                .ToList() ?? new List<int>();
 
-            // Remove old roles
-            _db.RoleUsers.RemoveRange(oldRoles);
+            _repo.UpdateUserRoles(model.UserId, selectedRoleIds);
+            _repo.Save();
 
-            // Add selected roles
-            foreach (var role in model.Roles)
+            return RedirectToAction("Index");
+
+           
+        }
+
+        private string UploadFiles(IFormFile file, string name)
+        {
+            if (file == null) return string.Empty;
+
+            string fileName = name + "_" + Guid.NewGuid().ToString()
+                              + Path.GetExtension(file.FileName);
+
+
+            string folderPath = Path.Combine(
+      Directory.GetCurrentDirectory(),
+      "wwwroot",
+      "Files",
+      "Users"
+  );
+
+            Directory.CreateDirectory(folderPath);
+
+
+            string filePath = Path.Combine(
+          folderPath,
+          fileName);
+
+
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
             {
-                if (role.IsSelected)
-                {
-                    UserRole roleUser = new UserRole
-                    {
-                        UserId = model.UserId,
-                        RoleId = role.RoleId
-                    };
+                file.CopyTo(stream);
+            }
 
-                    _db.RoleUsers.Add(roleUser);
+            return "/Files/Users/" + fileName;
+        }
+
+
+
+
+        public IActionResult ManageFiles(string uid)
+        {
+            //var user = _repo.Users.FirstOrDefault(e => e.Id == userId);
+            var user = _repo.GetByUId(uid);
+            if (user == null)
+                return NotFound();
+
+            var files = _repo.UserFiles.Where(e => e.UserId == user.Id).ToList();
+            ViewBag.UserName = user.Username;
+
+            ViewBag.Files = files;
+
+            UserFile userFile = new UserFile();
+
+            userFile.UserId = user.Id;
+
+            return View(userFile);
+        }
+
+
+        [HttpPost]
+        public IActionResult ManageFiles(UserFile userFile, IFormFile fileUser)
+        {
+            if (userFile != null)
+            {
+                {
+                    userFile.FileURL = UploadFiles(fileUser, userFile.Name);
+                    _repo.AddUserFile(userFile);
+                    _repo.Save();
                 }
             }
 
-            _db.SaveChanges();
+            //_repo.UserFiles.Add(userFile);
+            //_repo.SaveChanges();
+            var user = _repo.GetById(userFile.UserId);
 
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(ManageFiles), new { uid = user?.UID });
+
+        }
+
+        public IActionResult DeleteFile(int id, string uid)
+        {
+            var file = _repo.UserFiles.FirstOrDefault(f => f.Id == id);
+            if (file != null)
+            {
+                _repo.DeleteUserFile(file);
+                _repo.Save();
+            }
+
+            return RedirectToAction(nameof(ManageFiles), new { uid = uid });
         }
     }
 }

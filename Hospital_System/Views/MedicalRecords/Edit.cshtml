@@ -1,10 +1,15 @@
-﻿@model MedicalRecord
+﻿@using Hospital_System.Dtos.MedicalRecordsDtos
+@model UpdateMedicalRecordDto
 @{
 	ViewData["Title"] = "Edit MedicalRecord";
 }
 <h1> Edit MedicalRecord</h1>
 <div class="container">
 	<form method="post" asp-action="Edit">
+
+		<input type="hidden" asp-for="Id" />
+		<input type="hidden" asp-for="UID" />
+
 		<div class="form-group">
 			<label class="control-label">Diagnosis</label><br>
 			<input asp-for="Diagnosis" class="form-control" /><br>

@@ -1,5 +1,6 @@
 ﻿@using Hospital_Management_System.Models
-@model IEnumerable<User>
+@using Hospital_System.Dtos.UsersDtos
+@model IEnumerable<UserDto>
 
 @{
     ViewData["Title"] = "Users";
@@ -74,9 +75,16 @@
 
                         <a asp-controller="Users"
                            asp-action="ManageRoles"
-                           asp-route-id="@user.Id"
+                           asp-route-uid="@user.UID"
                            class="btn btn-warning">
                             Roles
+                        </a>
+
+                        <a asp-controller="Users"
+                           asp-action="ManageFiles"
+                           asp-route-uid="@user.UID"
+                           class="btn btn-warning">
+                            Files
                         </a>
 
                     </td>
@@ -105,7 +113,7 @@
 
         <div class="modal-content">
 
-            <form asp-action="Create" method="post">
+            <form asp-action="Create" method="post" enctype="multipart/form-data">
 
                 <!-- Header -->
                 <div class="modal-header">
@@ -189,6 +197,7 @@
 
                     </div>
 
+                   
                 </div>
 
 
@@ -236,7 +245,7 @@
 
             <div class="modal-content">
 
-                <form asp-action="Edit" method="post">
+                <form asp-action="Edit" method="post" enctype="multipart/form-data">
 
 
                     <!-- User Id -->
@@ -330,6 +339,9 @@
 
                         </div>
 
+
+                       
+
                     </div>
 
 
@@ -377,6 +389,10 @@
                            name="id"
                            value="@user.Id" />
 
+
+                    <input type="hidden"
+                           name="UID"
+                           value="@user.UID" />
 
                     <!-- Header -->
                     <div class="modal-header">

@@ -27,6 +27,21 @@ namespace Hospital_System.Data
 
         public DbSet<UserRole> RoleUsers { get; set; }
 
+        public DbSet<PatientFile> PatientFiles { get; set; }
+
+        public DbSet<DoctorFile> DoctorFiles { get; set; }
+
+        public DbSet<MedicalRecordFile> MedicalRecordFiles { get; set; }
+
+        public DbSet<PrescriptionFile> PrescriptionFiles { get; set; }
+
+        public DbSet<MedicationFile> MedicationFiles { get; set; }
+
+        public DbSet<InvoiceFile> InvoiceFiles { get; set; }
+
+        public DbSet<UserFile> UserFiles { get; set; }
+        public DbSet<AppointmentFile> AppointmentFiles { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

@@ -1,32 +1,65 @@
 ﻿using Hospital_Management_System.Models;
 using Hospital_System.Data;
+using Hospital_System.Dtos.PatientsDtos;
+using Hospital_System.Dtos.PermissionsDtos;
+using Hospital_System.Models;
+using Hospital_System.Repositories.MedicalRecordRepo;
+using Hospital_System.Repositories.PermissionRepo;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Hospital_Management_System.Controllers
 {
     public class PermissionsController : Controller
     {
-        private readonly AppDbContext _db;
-        public PermissionsController(AppDbContext db)
+
+        private readonly IPermissionRepository _repo;
+
+        public PermissionsController(IPermissionRepository repo)
         {
-            _db = db;
+            _repo = repo;
+            
         }
+
+        //private readonly AppDbContext _db;
+        //public PermissionsController(AppDbContext db)
+        //{
+        //    _db = db;
+        //}
         public IActionResult Index()
         {
-            IEnumerable<Permission> permissions = _db.Permissions.ToList();
-            return View(permissions);
+            //IEnumerable<Permission> permissions = _repo.GetAll();
+            var permission = _repo.GetAll().Select(p => new PermissionDto
+            {
+                Id = p.Id,
+                UID = p.UID,
+                Name = p.Name
+               
+            });
+            return View(permission);
         }
 
         // =========================
         // Create
         // =========================
         [HttpPost]
-        public IActionResult Create(Permission permission)
+        public IActionResult Create(CreatePermissionDto permission)
         {
             if (ModelState.IsValid)
             {
-                _db.Permissions.Add(permission);
-                _db.SaveChanges();
+                //Mapping
+                var per = new Permission
+                {
+                    UID = Guid.NewGuid().ToString(),
+                    Name = permission.Name
+                    
+                };
+
+                _repo.Add(per);
+                _repo.Save();
+
+                //_db.Permissions.Add(per);
+                //_db.SaveChanges();
             }
             return RedirectToAction("Index");
         }
@@ -36,14 +69,30 @@ namespace Hospital_Management_System.Controllers
         // Edit
         // =========================
         [HttpPost]
-        public IActionResult Edit(Permission permission)
+        public IActionResult Edit(UpdatePermissionDto permission)
         {
-            if (ModelState.IsValid)
+
+            var oldPermission = _repo.GetById(permission.Id);
+            if (oldPermission == null)
             {
-                _db.Permissions.Update(permission);
-                _db.SaveChanges();
+                return NotFound();
             }
-            return RedirectToAction("Index");
+
+            if (string.IsNullOrEmpty(permission.UID))
+            {
+                permission.UID = Guid.NewGuid().ToString();
+            }
+
+            oldPermission.Name = permission.Name;
+            oldPermission.UID = permission.UID;
+
+            _repo.Update(oldPermission);
+            _repo.Save();
+
+            //_db.Permissions.Update(per);
+            //_db.SaveChanges();
+
+            return RedirectToAction(nameof(Index));
         }
 
 
@@ -51,15 +100,20 @@ namespace Hospital_Management_System.Controllers
         // Delete
         // =========================
         [HttpPost]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(string UID)
         {
-            var permission = _db.Permissions.Find(id);
-            if (permission != null)
+           
+            var oldPermission = _repo.GetByUId(UID);
+
+            if (oldPermission == null)
             {
-                _db.Permissions.Remove(permission);
-                _db.SaveChanges();
+                return NotFound();
             }
-            return RedirectToAction("Index");
+
+            _repo.Delete(oldPermission);
+            _repo.Save();
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }
