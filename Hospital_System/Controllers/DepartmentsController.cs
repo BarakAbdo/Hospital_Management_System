@@ -179,5 +179,52 @@ namespace Hospital_System.Controllers
                 //_db.SaveChanges();
                 return RedirectToAction("Index");
         }
+
+        [HttpGet]
+        public IActionResult ManageFiles(string uid)
+        {
+            var department = _repo.GetByUId(uid);
+
+            if (department == null)
+                return NotFound();
+
+            var files = _repo.DepartmentFiles.Where(e => e.DepartmentId == department.Id).ToList();
+            ViewBag.DepartmentName = department.Name;
+
+            ViewBag.Files = files;
+
+            DepartmentFile departmentFile = new DepartmentFile();
+
+            departmentFile.DepartmentId = department.Id;
+
+            return View(departmentFile);
+        }
+
+        [HttpPost]
+        public IActionResult ManageFiles(DepartmentFile departmentFile, IFormFile fileDepartment)
+        {
+            if (fileDepartment != null)
+            {
+                departmentFile.FileURL = UploadImage(fileDepartment);
+            }
+
+            _repo.AddDepartmentFile(departmentFile);
+            _repo.Save();
+
+            var department = _repo.GetAll().FirstOrDefault(a => a.Id == departmentFile.DepartmentId);
+            return RedirectToAction(nameof(ManageFiles), new { uid = department?.UID });
+        }
+
+        public IActionResult DeleteFile(int id, string uid)
+        {
+            var file = _repo.DepartmentFiles.FirstOrDefault(f => f.Id == id);
+            if (file != null)
+            {
+                _repo.DeleteDepartmentFile(file);
+                _repo.Save();
+            }
+
+            return RedirectToAction(nameof(ManageFiles), new { uid = uid });
+        }
     }
 }

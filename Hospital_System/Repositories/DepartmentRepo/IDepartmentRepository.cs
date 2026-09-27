@@ -6,6 +6,8 @@ namespace Hospital_System.Repositories.DepartmentRepo
     {
 
         IEnumerable<Department> Departments { get; }
+        IEnumerable<DepartmentFile> DepartmentFiles { get; }
+
         IEnumerable<Department> GetAll();
 
             Department GetById(int id);
@@ -19,7 +21,10 @@ namespace Hospital_System.Repositories.DepartmentRepo
 
             void Delete(Department department);
 
-            void Save();
+        void AddDepartmentFile(DepartmentFile departmentFile);
+        void DeleteDepartmentFile(DepartmentFile departmentFile);
+
+        void Save();
 
 
         

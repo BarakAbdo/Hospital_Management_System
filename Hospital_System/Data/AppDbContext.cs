@@ -41,6 +41,7 @@ namespace Hospital_System.Data
 
         public DbSet<UserFile> UserFiles { get; set; }
         public DbSet<AppointmentFile> AppointmentFiles { get; set; }
+        public DbSet<DepartmentFile> DepartmentFiles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

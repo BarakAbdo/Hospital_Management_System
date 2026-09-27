@@ -17,6 +17,8 @@ namespace Hospital_System.Repositories.DepartmentRepo
 
         public IEnumerable<Department> Departments => _db.Departments.ToList();
 
+        public IEnumerable<DepartmentFile> DepartmentFiles => _db.DepartmentFiles.ToList();
+
         public void Add(Department department)
         {
 
@@ -55,6 +57,16 @@ namespace Hospital_System.Repositories.DepartmentRepo
         public void Update(Department department)
         {
             _dbSet.Update(department);
+        }
+
+        public void AddDepartmentFile(DepartmentFile departmentFile)
+        {
+            _db.DepartmentFiles.Add(departmentFile);
+        }
+
+        public void DeleteDepartmentFile(DepartmentFile departmentFile)
+        {
+            _db.DepartmentFiles.Remove(departmentFile);
         }
     }
 }
