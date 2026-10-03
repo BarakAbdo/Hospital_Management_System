@@ -3,8 +3,10 @@ using Hospital_System.Data;
 using Hospital_System.Dtos.PermissionsDtos;
 using Hospital_System.Dtos.RolesDtos;
 using Hospital_System.Models;
+using Hospital_System.Repositories.Base;
 using Hospital_System.Repositories.MedicalRecordRepo;
 using Hospital_System.Repositories.RoleRepo;
+using Hospital_System.Services.Base;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hospital_Management_System.Controllers
@@ -12,127 +14,63 @@ namespace Hospital_Management_System.Controllers
     public class RolesController : Controller
     {
 
-        private readonly IRoleRepository _repo;
+        private readonly IRoleService _roleService;
 
-        public RolesController(IRoleRepository repo)
+        public RolesController(IRoleService roleService)
         {
-            _repo = repo;
+            _roleService = roleService;
         }
-
-        //private readonly AppDbContext _db;
-
-        //public RolesController(AppDbContext db)
-        //{
-        //    _db = db;
-        //}
-
 
         public IActionResult Index()
         {
-            IEnumerable<Role> roles = _repo.GetAll();
-            var role = _repo.GetAll().Select(r => new RoleDto
-            {
-                Id = r.Id,
-                UID = r.UID,
-                Name = r.Name
-
-            }).ToList();
-            return View(role);
+            var roles = _roleService.GetAllRoles();
+            return View(roles);
         }
 
-        // =========================
-        // Create
-        // =========================
         [HttpPost]
         public IActionResult Create(CreateRoleDto role)
         {
             if (ModelState.IsValid)
             {
-                //Mapping 
-                var rol = new Role
-                {
-                    UID = Guid.NewGuid().ToString(),
-                    Name = role.Name,
-
-                };
-
-                _repo.Add(rol);
-                _repo.Save();
-
-                //_db.Roles.Add(rol);
-                //_db.SaveChanges();
+                _roleService.AddRole(role);
             }
-
             return RedirectToAction("Index");
         }
 
-
-        // =========================
-        // Edit
-        // =========================
         [HttpPost]
         public IActionResult Edit(UpdateRoleDto role)
         {
             if (ModelState.IsValid)
             {
-
-                if (role.UID == null)
-                    role.UID = Guid.NewGuid().ToString();
-
-                //Mapping 
-                var rol = new Role
-                {
-                    UID = role.UID,
-                    Name = role.Name,
-                    Id = role.Id
-                };
-
-                _repo.Update(rol);
-                _repo.Save();
-
-                //_db.Roles.Update(rol);
-                //_db.SaveChanges();
+                _roleService.UpdateRole(role);
             }
             return RedirectToAction("Index");
         }
 
-
-        // =========================
-        // Delete
-        // =========================
         [HttpPost]
         public IActionResult Delete(Role role)
         {
-            var oldRole = _repo.GetByUId(role.UID);
-            //var oldRole = _repo.Roles.FirstOrDefault(r => r.UID == role.UID);
+            var oldRole = _roleService.GetRoleByUId(role.UID);
             if (oldRole == null)
             {
-
                 return NotFound();
-                //_db.Roles.Remove(role);
-                //_db.SaveChanges();
             }
-            _repo.Delete(oldRole);
-            _repo.Save();
+
+            _roleService.DeleteRole(role.UID);
             return RedirectToAction("Index");
         }
 
         [HttpGet]
         public IActionResult AssignPermissions(string uid)
         {
-            var role = _repo.GetByUId(uid);
-
+            var role = _roleService.GetRoleByUId(uid);
             if (role == null)
             {
                 return NotFound();
             }
 
-            var allPermissions = _repo.Permissions.ToList();
-
-            var assignedPermissions = _repo.PermissionRoles
-                .Where(pr => pr.RoleId == role.Id)
-                .Select(pr => pr.PermissionId)
-                .ToList();
+            var allPermissions = _roleService.GetAllPermissions();
+            var assignedPermissions = _roleService.GetAssignedPermissionIds(role.Id);
 
             ViewBag.AllPermissions = allPermissions;
             ViewBag.AssignedPermissions = assignedPermissions;
@@ -144,17 +82,14 @@ namespace Hospital_Management_System.Controllers
         [HttpPost]
         public IActionResult AssignPermissions(string uid, List<int> permissionIds)
         {
-            var role = _repo.GetByUId(uid);
-
+            var role = _roleService.GetRoleByUId(uid);
             if (role == null)
             {
                 return NotFound();
             }
 
-            _repo.UpdatePermissions(role.Id, permissionIds);
-            _repo.Save();
+            _roleService.UpdateRolePermissions(role.Id, permissionIds);
 
-            //return RedirectToAction("Index");
             return RedirectToAction("AssignPermissions", new { uid = uid });
         }
 

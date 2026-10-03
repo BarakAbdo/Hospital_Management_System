@@ -170,7 +170,7 @@ namespace Hospital_System.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("AppointmentId")
+                    b.Property<int>("AppointmentId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Date")
@@ -227,7 +227,7 @@ namespace Hospital_System.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("DepartmentId")
+                    b.Property<int>("DepartmentId")
                         .HasColumnType("int");
 
                     b.Property<string>("FileURL")
@@ -700,7 +700,9 @@ namespace Hospital_System.Migrations
                 {
                     b.HasOne("Hospital_System.Models.Appointment", "Appointments")
                         .WithMany()
-                        .HasForeignKey("AppointmentId");
+                        .HasForeignKey("AppointmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Appointments");
                 });
@@ -709,7 +711,9 @@ namespace Hospital_System.Migrations
                 {
                     b.HasOne("Hospital_System.Models.Department", "Departments")
                         .WithMany()
-                        .HasForeignKey("DepartmentId");
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Departments");
                 });

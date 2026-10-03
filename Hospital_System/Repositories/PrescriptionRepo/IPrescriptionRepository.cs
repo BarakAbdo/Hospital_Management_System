@@ -1,9 +1,10 @@
-﻿using Hospital_Management_System.Models;
+﻿
 using Hospital_System.Models;
+using Hospital_System.Repositories.Base;
 
 namespace Hospital_System.Repositories.PrescriptionRepo
 {
-    public interface IPrescriptionRepository
+    public interface IPrescriptionRepository : IRepository<Prescription>
     {
         IEnumerable<Prescription> Prescriptions { get; }
         IEnumerable<PrescriptionFile> PrescriptionFiles { get; }
@@ -11,19 +12,11 @@ namespace Hospital_System.Repositories.PrescriptionRepo
         IEnumerable<Doctor> Doctors { get; }
         IEnumerable<Medication> Medications { get; }
 
-        IEnumerable<Prescription> GetAll();
-        Prescription GetById(int id);
+        IEnumerable<Prescription> GetAllPre();
         Prescription GetByUId(string uid);
-
-        void Add(Prescription prescription);
-
-        void Update(Prescription prescription);
-
-        void Delete(Prescription prescription);
 
         void AddFile(PrescriptionFile prescriptionFile);
 
         void DeletePrescriptionFile(PrescriptionFile prescriptionFile);
-        void Save();
     }
 }

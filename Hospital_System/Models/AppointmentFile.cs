@@ -12,7 +12,7 @@ namespace Hospital_System.Models
         public string FileURL { get; set; } = "";
 
         [ForeignKey(nameof(Appointments))]
-        public int? AppointmentId { get; set; }
+        public int AppointmentId { get; set; }
 
         public Appointment? Appointments { get; set; }
     }

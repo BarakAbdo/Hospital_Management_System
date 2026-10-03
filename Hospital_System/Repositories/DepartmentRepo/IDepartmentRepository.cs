@@ -1,31 +1,19 @@
 ﻿using Hospital_System.Models;
+using Hospital_System.Repositories.Base;
 
 namespace Hospital_System.Repositories.DepartmentRepo
 {
-    public interface IDepartmentRepository
+    public interface IDepartmentRepository : IRepository<Department>
     {
 
         IEnumerable<Department> Departments { get; }
         IEnumerable<DepartmentFile> DepartmentFiles { get; }
 
-        IEnumerable<Department> GetAll();
+        Department GetByUId(string uid);
 
-            Department GetById(int id);
-            Department GetByUId(string uid);
-
-            void Add(Department department);
-
-
-            void Update(Department department);
-
-
-            void Delete(Department department);
-
+           
         void AddDepartmentFile(DepartmentFile departmentFile);
         void DeleteDepartmentFile(DepartmentFile departmentFile);
-
-        void Save();
-
 
         
     }

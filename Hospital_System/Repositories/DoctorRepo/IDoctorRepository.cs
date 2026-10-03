@@ -1,30 +1,22 @@
 ﻿using Hospital_System.Models;
+using Hospital_System.Repositories.Base;
 
 namespace Hospital_System.Repositories.DoctorRepo
 {
-    public interface IDoctorRepository
+    public interface IDoctorRepository : IRepository<Doctor>
     {
         IEnumerable<Doctor> Doctors { get; }
         IEnumerable<Department> Departments { get; }
         IEnumerable<DoctorFile> DoctorFiles { get; }
-        IEnumerable<Doctor> GetAll();
 
-        Doctor GetById(int id);
-        Doctor GetByUId(string uid);
-
-        void Add(Doctor doctor);
-
-
-        void Update(Doctor doctor);
-
-
-        void Delete(Doctor doctor);
+        IEnumerable<Doctor> GetAllDoc();
+        Doctor? GetByUId(string uid);
 
         void AddFile(DoctorFile doctorFile);
 
         void DeleteDoctorFile(DoctorFile doctorFile);
 
-        void Save();
+       
 
     }
 }

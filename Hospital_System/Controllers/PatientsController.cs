@@ -3,80 +3,56 @@ using Hospital_System.Data;
 using Hospital_System.Dtos.MedicationsDtos;
 using Hospital_System.Dtos.PatientsDtos;
 using Hospital_System.Models;
+using Hospital_System.Repositories.Base;
 using Hospital_System.Repositories.MedicalRecordRepo;
 using Hospital_System.Repositories.PatientRepo;
+using Hospital_System.Services.Base;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hospital_System.Controllers
 {
     public class PatientsController : Controller
     {
-        private readonly IPatientRepository _repo;
+        private readonly IPatientService _patientService;
 
-        public PatientsController(IPatientRepository repo)
+        public PatientsController(IPatientService patientService)
         {
-            _repo = repo;
+            _patientService = patientService;
         }
 
 
-
-        //Dependency Injection 
-
-        //private readonly AppDbContext _db;
-        //public PatientsController(AppDbContext db)
-        //{
-        //    _db = db;
-
-        //}
         [HttpGet]
         public IActionResult Index()
         {
-            //IEnumerable<Patient> patients = _repo.GetAll();
-            var patient = _repo.GetAll().Select(p => new PatientDto
-            {
-                Id = p.Id,
-                UID = p.UID,
-                Name = p.Name,
-                Gender = p.Gender,
-                Phone = p.Phone,
-                DateOfBirth = p.DateOfBirth
-            }).ToList();
-            return View(patient);
+            var patients = _patientService.GetAllPatients();
+            return View(patients);
 
         }
+
+
         [HttpGet]
         public IActionResult Create()
         {
             return View();
         }
+
+
         [HttpPost]
         public IActionResult Create(CreatePatientDto patient)
         {
             if (ModelState.IsValid)
             {
-                //Mapping
-                var pat = new Patient
-                {
-                    UID = Guid.NewGuid().ToString(),
-                    Name = patient.Name,
-                    Gender = patient.Gender,
-                    Phone = patient.Phone,
-                    DateOfBirth = patient.DateOfBirth
-                };
-
-                _repo.Add(pat);
-                _repo.Save();
-
-                //_db.Patients.Add(pat);
-                //_db.SaveChanges();
+                _patientService.AddPatient(patient);
                 return RedirectToAction("Index");
             }
             return View(patient);
         }
+
+
         [HttpGet]
         public IActionResult Edit(string uid)
         {
-            var patient = _repo.GetByUId(uid);
+            var patient = _patientService.GetPatientByUId(uid);
             if (patient == null)
             {
                 return NotFound();
@@ -88,48 +64,30 @@ namespace Hospital_System.Controllers
                 UID = patient.UID,
                 Name = patient.Name,
                 Gender = patient.Gender,
-                Phone= patient.Phone,
+                Phone = patient.Phone,
                 DateOfBirth = patient.DateOfBirth
             };
             return View(update);
         }
+
+
+
         [HttpPost]
         public IActionResult Edit(UpdatePatientDto patient)
         {
             if (ModelState.IsValid)
             {
-
-                if (patient.UID == null)
-                    patient.UID = Guid.NewGuid().ToString();
-                //Mapping
-                var pat = new Patient
-                {
-                    UID = patient.UID,
-                    Name = patient.Name,
-                    Gender = patient.Gender,
-                    Phone = patient.Phone,
-                    DateOfBirth = patient.DateOfBirth,
-                    Id = patient.Id
-
-                };
-
-                _repo.Update(pat);
-                _repo.Save();
-
-                //_db.Patients.Update(pat);
-                //_db.SaveChanges();
+                _patientService.UpdatePatient(patient);
                 return RedirectToAction("Index");
             }
             return View(patient);
-
         }
 
 
         [HttpGet]
         public IActionResult Delete(string uid)
         {
-            var patient = _repo.GetByUId(uid);
-            //var patient = _repo.Patients.FirstOrDefault(p => p.UID == uid);
+            var patient = _patientService.GetPatientByUId(uid);
             if (patient == null)
             {
                 return NotFound();
@@ -140,67 +98,25 @@ namespace Hospital_System.Controllers
         [HttpPost]
         public IActionResult Delete(Patient patient)
         {
-            var oldPatient = _repo.GetByUId(patient.UID);
-            //if (ModelState.IsValid)
-            //{}
-                if (oldPatient == null)
-                {
-                    return NotFound();
-                }
-
-                _repo.Delete(oldPatient);
-                _repo.Save();  
-                
-                //_db.Patients.Remove(patient);
-                //_db.SaveChanges();
-                return RedirectToAction("Index");
-            
-        }
-
-
-
-        private string UploadFiles(IFormFile file, string name)
-        {
-            string fileName = name + "_" + Guid.NewGuid().ToString()
-                              + Path.GetExtension(file.FileName);
-
-
-            string folderPath = Path.Combine(
-      Directory.GetCurrentDirectory(),
-      "wwwroot",
-      "Files",
-      "Patients"
-  );
-
-            Directory.CreateDirectory(folderPath);
-
-
-            string filePath = Path.Combine(
-          folderPath,
-          fileName);
-
-
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
+            var oldPatient = _patientService.GetPatientByUId(patient.UID);
+            if (oldPatient == null)
             {
-                file.CopyTo(stream);
+                return NotFound();
             }
 
-            return "/Files/Patients/" + fileName;
+            _patientService.DeletePatient(oldPatient);
+            return RedirectToAction("Index");
+
         }
-
-
-
 
         public IActionResult ManageFiles(string uid)
         {
-            var patient = _repo.Patients.FirstOrDefault(e => e.UID == uid);
-
+            var patient = _patientService.GetPatientByUId(uid);
             if (patient == null)
                 return NotFound();
 
-            var files = _repo.PatientFiles.Where(e => e.PatientId == patient.Id).ToList();
-           
+            var files = _patientService.GetPatientFiles(patient.Id);
+
             ViewBag.PatientName = patient.Name;
             ViewBag.Files = files;
 
@@ -214,33 +130,16 @@ namespace Hospital_System.Controllers
         [HttpPost]
         public IActionResult ManageFiles(PatientFile patientFile, IFormFile filePatient)
         {
-            if (filePatient != null)
-            {
-                patientFile.FileURL = UploadFiles(filePatient, patientFile.Name);
-            }
+            _patientService.AddPatientFile(patientFile, filePatient);
 
-            _repo.AddFile(patientFile);
-            _repo.Save();
-
-            //_repo.PatientFiles.Add(patientFile);
-            //_repo.SaveChanges();
-
-            var patient = _repo.Patients.FirstOrDefault(p => p.Id == patientFile.PatientId);
-
-            //return RedirectToAction(nameof(ManageFiles), new { patientId = patientFile.PatientId });
-
+            var patient = _patientService.GetPatientById(patientFile.PatientId);
             return RedirectToAction(nameof(ManageFiles), new { uid = patient?.UID });
         }
 
+
         public IActionResult DeleteFile(int id, string uid)
         {
-            var file = _repo.PatientFiles.FirstOrDefault(f => f.Id == id);
-            if (file != null)
-            {
-                _repo.DeletePatientFile(file); // أو _repo.PatientFiles.Remove(file) حسب الدالة في الـ Repo لديك
-                _repo.Save();
-            }
-
+            _patientService.DeletePatientFile(id);
             return RedirectToAction(nameof(ManageFiles), new { uid = uid });
         }
     }

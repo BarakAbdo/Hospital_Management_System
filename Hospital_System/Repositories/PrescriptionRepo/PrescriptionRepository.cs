@@ -1,16 +1,17 @@
 ﻿using Hospital_Management_System.Models;
 using Hospital_System.Data;
 using Hospital_System.Models;
+using Hospital_System.Repositories.Base;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hospital_System.Repositories.PrescriptionRepo
 {
-    public class PrescriptionRepository : IPrescriptionRepository
+    public class PrescriptionRepository : Repository<Prescription>, IPrescriptionRepository
     {
         private readonly AppDbContext _db;
         private readonly DbSet<Prescription> _dbSet;
 
-        public PrescriptionRepository(AppDbContext db)
+        public PrescriptionRepository(AppDbContext db) : base (db)
         {
             _db = db;
             _dbSet = _db.Set<Prescription>();
@@ -26,17 +27,8 @@ namespace Hospital_System.Repositories.PrescriptionRepo
         public IEnumerable<Patient> Patients => _db.Patients.ToList();
         public IEnumerable<Doctor> Doctors => _db.Doctors.ToList();
         public IEnumerable<Medication> Medications => _db.Medications.ToList();
-        public void Add(Prescription prescription)
-        {
-            _dbSet.Add(prescription);
-        }
 
-        public void Delete(Prescription prescription)
-        {
-            _db.Remove(prescription);
-        }
-
-        public IEnumerable<Prescription> GetAll()
+        public IEnumerable<Prescription> GetAllPre()
         {
             return _dbSet
                 .Include(p => p.Patient)
@@ -63,15 +55,7 @@ namespace Hospital_System.Repositories.PrescriptionRepo
                  .FirstOrDefault(e => e.UID == uid);
         }
 
-        public void Save()
-        {
-            _db.SaveChanges();
-        }
-
-        public void Update(Prescription prescription)
-        {
-            _dbSet.Update(prescription);
-        }
+       
         public void AddFile(PrescriptionFile prescriptionFile)
         {
             _db.PrescriptionFiles.Add(prescriptionFile);

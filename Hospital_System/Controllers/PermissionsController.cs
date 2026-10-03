@@ -3,8 +3,10 @@ using Hospital_System.Data;
 using Hospital_System.Dtos.PatientsDtos;
 using Hospital_System.Dtos.PermissionsDtos;
 using Hospital_System.Models;
+using Hospital_System.Repositories.Base;
 using Hospital_System.Repositories.MedicalRecordRepo;
 using Hospital_System.Repositories.PermissionRepo;
+using Hospital_System.Services.Base;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,107 +14,49 @@ namespace Hospital_Management_System.Controllers
 {
     public class PermissionsController : Controller
     {
+        private readonly IPermissionService _permissionService;
 
-        private readonly IPermissionRepository _repo;
-
-        public PermissionsController(IPermissionRepository repo)
+        public PermissionsController(IPermissionService permissionService)
         {
-            _repo = repo;
-            
+            _permissionService = permissionService;
         }
 
-        //private readonly AppDbContext _db;
-        //public PermissionsController(AppDbContext db)
-        //{
-        //    _db = db;
-        //}
         public IActionResult Index()
         {
-            //IEnumerable<Permission> permissions = _repo.GetAll();
-            var permission = _repo.GetAll().Select(p => new PermissionDto
-            {
-                Id = p.Id,
-                UID = p.UID,
-                Name = p.Name
-               
-            });
-            return View(permission);
+            var permissions = _permissionService.GetAllPermissions();
+            return View(permissions);
         }
 
-        // =========================
-        // Create
-        // =========================
+   
         [HttpPost]
         public IActionResult Create(CreatePermissionDto permission)
         {
             if (ModelState.IsValid)
             {
-                //Mapping
-                var per = new Permission
-                {
-                    UID = Guid.NewGuid().ToString(),
-                    Name = permission.Name
-                    
-                };
-
-                _repo.Add(per);
-                _repo.Save();
-
-                //_db.Permissions.Add(per);
-                //_db.SaveChanges();
+                _permissionService.AddPermission(permission);
             }
             return RedirectToAction("Index");
         }
 
 
-        // =========================
-        // Edit
-        // =========================
+    
         [HttpPost]
         public IActionResult Edit(UpdatePermissionDto permission)
         {
-
-            var oldPermission = _repo.GetById(permission.Id);
-            if (oldPermission == null)
+            if (ModelState.IsValid)
             {
-                return NotFound();
+                _permissionService.UpdatePermission(permission);
             }
-
-            if (string.IsNullOrEmpty(permission.UID))
-            {
-                permission.UID = Guid.NewGuid().ToString();
-            }
-
-            oldPermission.Name = permission.Name;
-            oldPermission.UID = permission.UID;
-
-            _repo.Update(oldPermission);
-            _repo.Save();
-
-            //_db.Permissions.Update(per);
-            //_db.SaveChanges();
-
             return RedirectToAction(nameof(Index));
         }
 
 
-        // =========================
-        // Delete
-        // =========================
+      
         [HttpPost]
         public IActionResult Delete(string UID)
         {
-           
-            var oldPermission = _repo.GetByUId(UID);
 
-            if (oldPermission == null)
-            {
-                return NotFound();
-            }
-
-            _repo.Delete(oldPermission);
-            _repo.Save();
-
+            _permissionService.DeletePermission(UID);
             return RedirectToAction(nameof(Index));
         }
     }

@@ -1,23 +1,22 @@
 ﻿using Hospital_System.Data;
 using Hospital_System.Repositories.AccountRepo;
+using Hospital_System.Repositories.Base;
+using Hospital_System.Services.Base;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Hospital_Management_System.Controllers
 {
     public class AccountsController : Controller
     {
-        private readonly IAccountRepository _repo;
-        public AccountsController(IAccountRepository repo)
+
+        //Service
+        private readonly IAccountService _accountService;
+
+        public AccountsController(IAccountService accountService) 
         {
-            _repo = repo;
+            _accountService = accountService;
         }
-
-        //private readonly AppDbContext _db;
-
-        //public AccountsController(AppDbContext db)
-        //{
-        //    _db = db;
-        //}
 
         public IActionResult Login()
         {
@@ -28,23 +27,16 @@ namespace Hospital_Management_System.Controllers
         [HttpPost]
         public IActionResult Login(string username, string password)
         {
-            var user = _repo.GetByUsername(username);
-            //var user = _db.Users.FirstOrDefault(u => u.Username == username);
-            //Hash the provided password and compare it with the stored hash
 
-            if (user != null && !string.IsNullOrEmpty(user.PasswordHash) && BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
+            var user = _accountService.Login(username, password);
+
+            if (user != null)
             {
-
-                // User authenticated successfully
                 return RedirectToAction("Index", "Home");
             }
-            else
-            {
-                // Authentication failed
 
-                ModelState.AddModelError("", "Invalid username or password");
-                return View();
-            }
+            ModelState.AddModelError("", "Invalid username or password");
+            return View();
         }
     }
 }

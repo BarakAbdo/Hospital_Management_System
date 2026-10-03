@@ -1,58 +1,46 @@
-﻿using Hospital_System.Data;
-using Hospital_System.Dtos.AppointmentsDtos;
+﻿using Hospital_System.Dtos.AppointmentsDtos;
 using Hospital_System.Models;
-using Hospital_System.Repositories.AppointmentRepo;
+using Hospital_System.Repositories.Base;
+using Hospital_System.Services.Base;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+
+
 
 namespace Hospital_System.Controllers
 {
     public class AppointmentsController : Controller
     {
 
-        private readonly IAppointmentRepository _repo;
-        public AppointmentsController(IAppointmentRepository repo)
-        {
-            _repo = repo;
+        //private readonly IUnitOfWork _unitOfWork;
+        //public AppointmentsController(IUnitOfWork unitOfWork)
+        //{
+        //    _unitOfWork = unitOfWork;
+        //}
 
+        private readonly IAppointmentService _appointmentService;
+
+        public AppointmentsController(IAppointmentService appointmentService)
+        {
+            _appointmentService = appointmentService;
         }
 
-
-        //private readonly AppDbContext _db;
-        //public AppointmentsController(AppDbContext db)
-        //{
-        //    _db = db;
-
-        //}
         public IActionResult Index()
         {
-            //IEnumerable<Appointment> appointments = _repo.GetAll();
-            var appointment = _repo.GetAll().Select(a => new AppointmentDto
-            {
-                Id = a.Id,
-                UID = a.UID,
-                Date = a.Date,
-                Time = a.Time,
-                Status = a.Status,
-                PatientId = a.PatientId,
-                DoctorId = a.DoctorId,
-                PatientName = a.Patient.Name,
-                DoctorName = a.Doctor.Name
-            }).ToList();
-
-            return View(appointment);
+            var appointments = _appointmentService.GetAllAppointments();
+            return View(appointments);
         }
+
         public void GetDoctor()
         {
-            IEnumerable<Doctor> doctors = _repo.Doctors.ToList();
+            IEnumerable<Doctor> doctors = _appointmentService.GetAllDoctors();
             SelectList doctorSelectList = new SelectList(doctors, "Id", "Name");
             ViewBag.DoctorSelectList = doctorSelectList;
         }
 
         public void GetPatient()
         {
-            IEnumerable<Patient> patients = _repo.Patients.ToList();
+            IEnumerable<Patient> patients = _appointmentService.GetAllPatients();
             SelectList patientSelectList = new SelectList(patients, "Id", "Name");
             ViewBag.patientSelectList = patientSelectList;
         }
@@ -62,49 +50,30 @@ namespace Hospital_System.Controllers
         {
             GetDoctor();
             GetPatient();
-
             return View();
         }
 
 
         [HttpPost]
-        public IActionResult Create(CreateAppointmentDto appointment)
+        public IActionResult Create(CreateAppointmentDto appointmentDto)
         {
             if (ModelState.IsValid)
             {
-
-                //Mapping
-                var app = new Appointment
-                {
-                    UID = Guid.NewGuid().ToString(),
-                    Date = appointment.Date,
-                    Time = appointment.Time,
-                    Status = appointment.Status,
-                    PatientId = appointment.PatientId,
-                    DoctorId = appointment.DoctorId,
-
-                };
-                _repo.Add(app);
-                _repo.Save();
-
-                //_db.Appointments.Add(app);
-                //_db.SaveChanges();
+                _appointmentService.AddAppointment(appointmentDto);
                 return RedirectToAction("Index");
             }
             GetDoctor();
             GetPatient();
-            return View(appointment);
+            return View(appointmentDto);
         }
+
 
         [HttpGet]
         public IActionResult Edit(string uid)
         {
             GetDoctor();
             GetPatient();
-
-            var appointment = _repo.GetByUId(uid);
-
-            //var appointment = _repo.Appointments.FirstOrDefault(a=>a.UID == uid);
+            var appointment = _appointmentService.GetByUId(uid);
             if (appointment == null)
             {
                 return NotFound();
@@ -128,35 +97,17 @@ namespace Hospital_System.Controllers
 
 
         [HttpPost]
-        public IActionResult Edit(UpdateAppointmentDto appointment)
+        public IActionResult Edit(UpdateAppointmentDto appointmentDto)
         {
             if (ModelState.IsValid)
             {
-                if (appointment.UID == null)
-                    appointment.UID = Guid.NewGuid().ToString();
-                var app = new Appointment
-                {
-                    UID = appointment.UID,
-                    Date = appointment.Date,
-                    Time = appointment.Time,
-                    Status = appointment.Status,
-                    PatientId = appointment.PatientId,
-                    DoctorId = appointment.DoctorId,
-                    Id = appointment.Id,
 
-
-                };
-
-                _repo.Update(app);
-                _repo.Save();
-
-                //_repo.Appointments.Update(app);
-                //_repo.SaveChanges();
+                _appointmentService.UpdateAppointment(appointmentDto);
                 return RedirectToAction("Index");
             }
             GetDoctor();
             GetPatient();
-            return View(appointment);
+            return View(appointmentDto);
         }
 
         [HttpGet]
@@ -164,8 +115,7 @@ namespace Hospital_System.Controllers
         {
             GetDoctor();
             GetPatient();
-            var appointment = _repo.GetByUId(uid);
-            //var appointment = _repo.Appointments.FirstOrDefault(a=>a.UID == uid);
+            var appointment = _appointmentService.GetByUId(uid);
             if (appointment == null)
             {
                 return NotFound();
@@ -180,73 +130,30 @@ namespace Hospital_System.Controllers
         {
             GetDoctor();
             GetPatient();
-            var oldAppointment = _repo.GetByUId(appointment.UID);
-            //var oldAppointment = _repo.Appointments.FirstOrDefault(a => a.UID == appointment.UID);
-
-            if (oldAppointment == null)
+            var oldAppointment = _appointmentService.GetByUId(appointment.UID);
+            if (oldAppointment != null)
             {
-                return NotFound();
+                _appointmentService.DeleteAppointment(oldAppointment);
+                return RedirectToAction("Index");
             }
-
-            _repo.Delete(oldAppointment);
-            _repo.Save();
-
-            //_repo.Appointments.Remove(oldAppointment);
-            //_repo.SaveChanges();
-
-            return RedirectToAction("Index");
-
+            return View(appointment);
         }
-
-        private string UploadFiles(IFormFile file, string name)
-        {
-            string fileName = name + "_" + Guid.NewGuid().ToString()
-                              + Path.GetExtension(file.FileName);
-
-
-            string folderPath = Path.Combine(
-      Directory.GetCurrentDirectory(),
-      "wwwroot",
-      "Files",
-      "Appointments"
-  );
-
-            Directory.CreateDirectory(folderPath);
-
-
-            string filePath = Path.Combine(
-          folderPath,
-          fileName);
-
-
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                file.CopyTo(stream);
-            }
-
-            return "/Files/Appointments/" + fileName;
-        }
-
-
 
 
         public IActionResult ManageFiles(string uid)
         {
-            var appointment = _repo.GetByUId(uid);
-            //var appointment = _repo.Appointments.FirstOrDefault(e => e.Id == appointmentId);
-
+            var appointment = _appointmentService.GetByUId(uid);
             if (appointment == null)
                 return NotFound();
 
-            var files = _repo.AppointmentFiles.Where(e => e.AppointmentId == appointment.Id).ToList();
+            var files = _appointmentService.GetAppointmentFiles(appointment.Id);
             ViewBag.AppointmentName = appointment.Status;
-
             ViewBag.Files = files;
 
-            AppointmentFile appointmentFile = new AppointmentFile();
-
-            appointmentFile.AppointmentId = appointment.Id;
+            AppointmentFile appointmentFile = new AppointmentFile
+            {
+                AppointmentId = appointment.Id
+            };
 
             return View(appointmentFile);
         }
@@ -255,42 +162,18 @@ namespace Hospital_System.Controllers
         [HttpPost]
         public IActionResult ManageFiles(AppointmentFile appointmentFile, IFormFile fileAppointment)
         {
-            if (fileAppointment != null)
-            {
-                appointmentFile.FileURL = UploadFiles(fileAppointment, appointmentFile.Status);
-            }
+            _appointmentService.AddAppointmentFile(appointmentFile, fileAppointment);
 
-            _repo.AddFile(appointmentFile);
-            _repo.Save();
-
-
-            var appointment = _repo.GetAll().FirstOrDefault(a => a.Id == appointmentFile.AppointmentId);
+            var appointment = _appointmentService.GetById(appointmentFile.AppointmentId);
             return RedirectToAction(nameof(ManageFiles), new { uid = appointment?.UID });
 
         }
 
         public IActionResult DeleteFile(int id, string uid)
         {
-            var file = _repo.AppointmentFiles.FirstOrDefault(f => f.Id == id);
-            if (file != null)
-            {
-                _repo.DeleteAppointmentFile(file);
-                _repo.Save();
-            }
-
+            _appointmentService.DeleteAppointmentFile(id);
             return RedirectToAction(nameof(ManageFiles), new { uid = uid });
         }
-        //public IActionResult Details(int id)
-        //{
-        //    //ViewBag.Departments = _db.Departments.ToList();
-        //    var appointment = _db.Appointments.Include(e => e.Patient).Include(e => e.Doctor).ToList();
-        //    if (appointment == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return View(appointment);
-        //}
-
 
     }
 }

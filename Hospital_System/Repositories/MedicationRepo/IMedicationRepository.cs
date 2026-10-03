@@ -1,26 +1,17 @@
 ﻿using Hospital_System.Models;
+using Hospital_System.Repositories.Base;
 
 namespace Hospital_System.Repositories.MedicationRepo
 {
-    public interface IMedicationRepository
+    public interface IMedicationRepository : IRepository<Medication>
     {
         IEnumerable<Medication> Medications { get; }
         IEnumerable<MedicationFile> MedicationFiles { get; }
-        IEnumerable<Medication> GetAll();
 
-        Medication GetById(int id);
+        
         Medication GetByUId(string uid);
-
-        void Add(Medication medication);
-
-
-        void Update(Medication medication);
-
-
-        void Delete(Medication medication);
 
         void AddFile(MedicationFile medicationFile);
         void DeleteMedicationFile(MedicationFile medicationFile);
-        void Save();
     }
 }
