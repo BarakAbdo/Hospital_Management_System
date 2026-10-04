@@ -1,10 +1,11 @@
-﻿using Hospital_System.Dtos.MedicationsDtos;
-using Hospital_System.Models;
-using Hospital_System.Repositories.Base;
-using Hospital_System.Services.Base;
+﻿
+
+using Hospital_Management_System.Application.Dtos.MedicationsDtos;
+using Hospital_Management_System.Application.Services.Base;
+using Hospital_Management_System.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Hospital_System.Controllers
+namespace Hospital_Management_System.Controllers
 {
     public class MedicationsController : Controller
     {

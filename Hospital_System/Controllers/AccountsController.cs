@@ -1,9 +1,5 @@
-﻿using Hospital_System.Data;
-using Hospital_System.Repositories.AccountRepo;
-using Hospital_System.Repositories.Base;
-using Hospital_System.Services.Base;
+﻿using Hospital_Management_System.Application.Services.Base;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Hospital_Management_System.Controllers
 {

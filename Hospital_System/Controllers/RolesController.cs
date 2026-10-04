@@ -1,12 +1,7 @@
-﻿using Hospital_Management_System.Models;
-using Hospital_System.Data;
-using Hospital_System.Dtos.PermissionsDtos;
-using Hospital_System.Dtos.RolesDtos;
-using Hospital_System.Models;
-using Hospital_System.Repositories.Base;
-using Hospital_System.Repositories.MedicalRecordRepo;
-using Hospital_System.Repositories.RoleRepo;
-using Hospital_System.Services.Base;
+﻿
+using Hospital_Management_System.Application.Dtos.RolesDtos;
+using Hospital_Management_System.Application.Services.Base;
+using Hospital_Management_System.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hospital_Management_System.Controllers

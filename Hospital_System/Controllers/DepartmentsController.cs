@@ -1,15 +1,9 @@
-﻿using Hospital_System.Data;
-using Hospital_System.Dtos.DepartmentDtos;
-using Hospital_System.Models;
-using Hospital_System.Repositories.AppointmentRepo;
-using Hospital_System.Repositories.Base;
-using Hospital_System.Repositories.DepartmentRepo;
-using Hospital_System.Services.Base;
+﻿using Hospital_Management_System.Application.Dtos.DepartmentDtos;
+using Hospital_Management_System.Application.Services.Base;
+using Hospital_Management_System.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
-using static Hospital_System.Dtos.DepartmentDtos.DepartmentDto;
 
-
-namespace Hospital_System.Controllers
+namespace Hospital_Management_System.Controllers
 {
     public class DepartmentsController : Controller
     {

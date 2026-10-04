@@ -1,4 +1,5 @@
-﻿@model MedicalRecordFile
+﻿@using Hospital_Management_System.Domain.Models
+@model MedicalRecordFile
 @{
     ViewData["Title"] = "MedicalRecord Files";
     var files = ViewBag.Files as IEnumerable<MedicalRecordFile>;

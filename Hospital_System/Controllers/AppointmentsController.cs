@@ -1,13 +1,10 @@
-﻿using Hospital_System.Dtos.AppointmentsDtos;
-using Hospital_System.Models;
-using Hospital_System.Repositories.Base;
-using Hospital_System.Services.Base;
+﻿using Hospital_Management_System.Application.Dtos.AppointmentsDtos;
+using Hospital_Management_System.Application.Services.Base;
+using Hospital_Management_System.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-
-
-namespace Hospital_System.Controllers
+namespace Hospital_Management_System.Controllers
 {
     public class AppointmentsController : Controller
     {
