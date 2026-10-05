@@ -16,7 +16,7 @@
 
         <div class="form-group">
             <label class="control-label">Name</label>
-            <input asp-for="Dosage" class="form-control" />
+            <input asp-for="Dosage" class="form-control" required />
 
             <input asp-for="PrescriptionId" hidden />
         </div>
@@ -26,7 +26,7 @@
 
             <input type="file"
                    name="filePrescription"
-                   class="form-control" />
+                   class="form-control" required />
         </div>
 
 

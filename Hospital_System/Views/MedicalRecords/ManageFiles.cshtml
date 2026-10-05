@@ -18,7 +18,7 @@
 
         <div class="form-group">
             <label class="control-label">Name</label>
-            <input asp-for="Notes" class="form-control" />
+            <input asp-for="Notes" class="form-control" required />
 
             <input asp-for="MedicalRecordId" hidden />
         </div>
@@ -28,7 +28,7 @@
 
             <input type="file"
                    name="fileMedicalRecord"
-                   class="form-control" />
+                   class="form-control" required />
         </div>
 
 

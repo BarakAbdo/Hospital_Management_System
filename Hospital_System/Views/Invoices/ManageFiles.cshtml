@@ -15,7 +15,7 @@
     <form method="post" asp-action="ManageFiles" enctype="multipart/form-data">
         <div class="form-group">
             <label class="control-label">Name</label>
-            <input asp-for="Status" class="form-control" />
+            <input asp-for="Status" class="form-control" required />
 
             <input asp-for="InvoiceId" hidden />
         </div>
@@ -25,7 +25,7 @@
 
             <input type="file"
                    name="fileInvoice"
-                   class="form-control" />
+                   class="form-control" required />
         </div>
 
 
