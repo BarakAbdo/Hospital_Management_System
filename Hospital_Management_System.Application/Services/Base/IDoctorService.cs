@@ -14,7 +14,7 @@ namespace Hospital_Management_System.Application.Services.Base
         void AddDoctor(CreateDoctorDto doctorDto);
         void UpdateDoctor(UpdateDoctorDto doctorDto);
         void DeleteDoctor(DoctorDto doctor);
-
+         
        
         IEnumerable<DoctorFile> GetDoctorFiles(int doctorId);
         void AddDoctorFile(DoctorFile doctorFile, IFormFile fileDoctor);
