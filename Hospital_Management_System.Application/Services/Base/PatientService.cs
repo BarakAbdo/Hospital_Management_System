@@ -31,14 +31,36 @@ namespace Hospital_Management_System.Application.Services.Base
             return patientDtos;
         }
 
-        public Patient GetPatientById(int id)
+        public PatientDto GetPatientById(int id)
         {
-            return _unitOfWork.PatientRepo.GetById(id);
+            var p = _unitOfWork.PatientRepo.GetById(id);
+
+            var patientDto = new PatientDto
+            {
+                Id = p.Id,
+                UID = p.UID,
+                Name = p.Name,
+                Gender = p.Gender,
+                Phone = p.Phone,
+                DateOfBirth = p.DateOfBirth
+            };
+            return patientDto;
         }
 
-        public Patient GetPatientByUId(string uid)
+        public PatientDto GetPatientByUId(string uid)
         {
-            return _unitOfWork.PatientRepo.GetByUId(uid);
+            var p = _unitOfWork.PatientRepo.GetByUId(uid);
+
+            var  patientDto = new PatientDto
+            {
+                Id = p.Id,
+                UID = p.UID,
+                Name = p.Name,
+                Gender = p.Gender,
+                Phone = p.Phone,
+                DateOfBirth = p.DateOfBirth
+            };
+            return patientDto;
         }
 
         public void AddPatient(CreatePatientDto patientDto)
@@ -58,7 +80,7 @@ namespace Hospital_Management_System.Application.Services.Base
 
         public void UpdatePatient(UpdatePatientDto patientDto)
         {
-            if (patientDto.UID == null)
+            if (string.IsNullOrEmpty(patientDto.UID))
             {
                 patientDto.UID = Guid.NewGuid().ToString();
             }
@@ -77,15 +99,16 @@ namespace Hospital_Management_System.Application.Services.Base
             _unitOfWork.Save();
         }
 
-        public void DeletePatient(Patient patient)
+        public void DeletePatient(PatientDto patientDto)
         {
-            var oldPatient = _unitOfWork.PatientRepo.GetByUId(patient.UID);
+            var oldPatient = _unitOfWork.PatientRepo.GetByUId(patientDto.UID);
             if (oldPatient != null)
             {
                 _unitOfWork.PatientRepo.Delete(oldPatient);
                 _unitOfWork.Save();
             }
         }
+
 
         public IEnumerable<PatientFile> GetPatientFiles(int patientId)
         {
@@ -115,7 +138,7 @@ namespace Hospital_Management_System.Application.Services.Base
 
         private string UploadFiles(IFormFile file, string name)
         {
-            string fileName = name + "_" + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+            string fileName = (string.IsNullOrEmpty(name) ? "File" : name) + "_" + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
 
             string folderPath = Path.Combine(
                 Directory.GetCurrentDirectory(),
@@ -135,6 +158,5 @@ namespace Hospital_Management_System.Application.Services.Base
 
             return "/Files/Patients/" + fileName;
         }
-
     }
 }

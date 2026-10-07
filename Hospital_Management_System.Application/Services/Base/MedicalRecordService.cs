@@ -1,4 +1,6 @@
-﻿using Hospital_Management_System.Application.Dtos.MedicalRecordsDtos;
+﻿using Hospital_Management_System.Application.Dtos.DoctorsDtos;
+using Hospital_Management_System.Application.Dtos.MedicalRecordsDtos;
+using Hospital_Management_System.Application.Dtos.PatientsDtos;
 using Hospital_Management_System.Domain.Models;
 using Hospital_Management_System.Infrastructure.Repositories.Base;
 using Microsoft.AspNetCore.Http;
@@ -33,24 +35,63 @@ namespace Hospital_Management_System.Application.Services.Base
             return medicalRecordDtos;
         }
 
-        public IEnumerable<Patient> GetAllPatients()
+        public IEnumerable<PatientDto> GetAllPatients()
         {
-            return _unitOfWork.MedicalRecordRepo.Patients.ToList();
+            var patientDto = _unitOfWork.MedicalRecordRepo.Patients.Select(p => new PatientDto
+            {
+                Id = p.Id,
+                UID = p.UID,
+                Name = p.Name
+            }).ToList();
+
+            return patientDto;
         }
 
-        public IEnumerable<Doctor> GetAllDoctors()
+        public IEnumerable<DoctorDto> GetAllDoctors()
         {
-            return _unitOfWork.MedicalRecordRepo.Doctors.ToList();
+            var doctorDto = _unitOfWork.MedicalRecordRepo.Doctors.Select(d => new DoctorDto
+            {
+                Id = d.Id,
+                UID = d.UID,
+                Name = d.Name
+            }).ToList();
+            return doctorDto;
         }
 
-        public MedicalRecord GetMedicalRecordById(int id)
+        public MedicalRecordDto GetMedicalRecordById(int id)
         {
-            return _unitOfWork.MedicalRecordRepo.GetById(id);
+            var m = _unitOfWork.MedicalRecordRepo.GetById(id);
+
+            var medicalRecordDto = new MedicalRecordDto
+            {
+                Id = m.Id,
+                UID = m.UID,
+                Diagnosis = m.Diagnosis,
+                Notes = m.Notes,
+                PatientId = m.PatientId,
+                DoctorId = m.DoctorId,
+                PatientName = m.Patient?.Name,
+                DoctorName = m.Doctor?.Name
+            };
+            return medicalRecordDto;
         }
 
-        public MedicalRecord GetMedicalRecordByUId(string uid)
+        public MedicalRecordDto GetMedicalRecordByUId(string uid)
         {
-            return _unitOfWork.MedicalRecordRepo.GetByUId(uid);
+            var m = _unitOfWork.MedicalRecordRepo.GetByUId(uid);
+
+            var medicalRecordDto = new MedicalRecordDto
+            {
+                Id = m.Id,
+                UID = m.UID,
+                Diagnosis = m.Diagnosis,
+                Notes = m.Notes,
+                PatientId = m.PatientId,
+                DoctorId = m.DoctorId,
+                PatientName = m.Patient?.Name,
+                DoctorName = m.Doctor?.Name
+            };
+            return medicalRecordDto;
         }
 
         public void AddMedicalRecord(CreateMedicalRecordDto medicalRecordDto)
@@ -70,7 +111,7 @@ namespace Hospital_Management_System.Application.Services.Base
 
         public void UpdateMedicalRecord(UpdateMedicalRecordDto medicalRecordDto)
         {
-            if (medicalRecordDto.UID == null)
+            if (string.IsNullOrEmpty(medicalRecordDto.UID))
             {
                 medicalRecordDto.UID = Guid.NewGuid().ToString();
             }
@@ -89,9 +130,9 @@ namespace Hospital_Management_System.Application.Services.Base
             _unitOfWork.Save();
         }
 
-        public void DeleteMedicalRecord(MedicalRecord medicalRecord)
+        public void DeleteMedicalRecord(MedicalRecordDto medicalRecordDto)
         {
-            var oldMedicalRecord = _unitOfWork.MedicalRecordRepo.GetByUId(medicalRecord.UID);
+            var oldMedicalRecord = _unitOfWork.MedicalRecordRepo.GetByUId(medicalRecordDto.UID);
             if (oldMedicalRecord != null)
             {
                 _unitOfWork.MedicalRecordRepo.Delete(oldMedicalRecord);
@@ -127,7 +168,7 @@ namespace Hospital_Management_System.Application.Services.Base
 
         private string UploadFiles(IFormFile file, string name)
         {
-            string fileName = name + "_" + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+            string fileName = (string.IsNullOrEmpty(name) ? "File" : name) + "_" + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
 
             string folderPath = Path.Combine(
                 Directory.GetCurrentDirectory(),

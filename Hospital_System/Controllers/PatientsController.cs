@@ -1,6 +1,4 @@
-﻿
-
-using Hospital_Management_System.Application.Dtos.PatientsDtos;
+﻿using Hospital_Management_System.Application.Dtos.PatientsDtos;
 using Hospital_Management_System.Application.Services.Base;
 using Hospital_Management_System.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -15,14 +13,13 @@ namespace Hospital_Management_System.Controllers
         {
             _patientService = patientService;
         }
-
+        
 
         [HttpGet]
         public IActionResult Index()
         {
             var patients = _patientService.GetAllPatients();
             return View(patients);
-
         }
 
 
@@ -66,8 +63,6 @@ namespace Hospital_Management_System.Controllers
             return View(update);
         }
 
-
-
         [HttpPost]
         public IActionResult Edit(UpdatePatientDto patient)
         {
@@ -91,20 +86,16 @@ namespace Hospital_Management_System.Controllers
             return View(patient);
         }
 
+
         [HttpPost]
-        public IActionResult Delete(Patient patient)
+        public IActionResult Delete(PatientDto patient)
         {
-            var oldPatient = _patientService.GetPatientByUId(patient.UID);
-            if (oldPatient == null)
-            {
-                return NotFound();
-            }
-
-            _patientService.DeletePatient(oldPatient);
+            _patientService.DeletePatient(patient);
             return RedirectToAction("Index");
-
         }
 
+
+        [HttpGet]
         public IActionResult ManageFiles(string uid)
         {
             var patient = _patientService.GetPatientByUId(uid);
@@ -115,6 +106,7 @@ namespace Hospital_Management_System.Controllers
 
             ViewBag.PatientName = patient.Name;
             ViewBag.Files = files;
+            ViewBag.PatientUid = patient.UID;
 
             PatientFile patientFile = new PatientFile();
             patientFile.PatientId = patient.Id;

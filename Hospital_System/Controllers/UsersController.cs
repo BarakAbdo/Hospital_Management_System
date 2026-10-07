@@ -1,19 +1,13 @@
-﻿
-
-using Hospital_Management_System.Application.Dtos;
+﻿using Hospital_Management_System.Application.Dtos;
 using Hospital_Management_System.Application.Dtos.UsersDtos;
 using Hospital_Management_System.Application.Services.Base;
 using Hospital_Management_System.Domain.Models;
-using Hospital_Management_System.Infrastructure.Repositories.Base;
 using Microsoft.AspNetCore.Mvc;
-
 
 namespace Hospital_Management_System.Controllers
 {
     public class UsersController : Controller
     {
-        private readonly IUnitOfWork _unitOfWork;
-
         private readonly IUserService _userService;
 
         public UsersController(IUserService userService)
@@ -21,12 +15,18 @@ namespace Hospital_Management_System.Controllers
             _userService = userService;
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
             var users = _userService.GetAllUsers();
             return View(users);
         }
 
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
+        }
 
         [HttpPost]
         public IActionResult Create(CreateUserDto userDto)
@@ -39,11 +39,30 @@ namespace Hospital_Management_System.Controllers
             return View(userDto);
         }
 
-        
+        [HttpGet]
+        public IActionResult Edit(string uid)
+        {
+            var user = _userService.GetUserByUId(uid);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var updateDto = new UpdateUserDto
+            {
+                Id = user.Id,
+                UID = user.UID,
+                Name = user.Name,
+                Email = user.Email,
+                Username = user.Username
+            };
+
+            return View(updateDto);
+        }
+
         [HttpPost]
         public IActionResult Edit(UpdateUserDto user)
         {
-
             if (ModelState.IsValid)
             {
                 var existingUser = _userService.GetUserById(user.Id);
@@ -58,21 +77,28 @@ namespace Hospital_Management_System.Controllers
             return View(user);
         }
 
-       
-
+        [HttpGet]
+        public IActionResult Delete(string uid)
+        {
+            var user = _userService.GetUserByUId(uid);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return View(user);
+        }
 
         [HttpPost]
-        public IActionResult Delete(User user)
+        public IActionResult Delete(UserDto user)
         {
             var oldUser = _userService.GetUserByUId(user.UID);
             if (oldUser == null)
             {
                 return NotFound();
             }
-            _userService.DeleteUser(user.UID);
+            _userService.DeleteUser(user);
             return RedirectToAction("Index");
         }
-
 
         [HttpGet]
         public IActionResult ManageRoles(string uid)
@@ -82,7 +108,6 @@ namespace Hospital_Management_System.Controllers
             {
                 return NotFound();
             }
-
 
             var roles = _userService.GetAllRoles();
             var userRoleIds = _userService.GetUserRoleIds(user.Id);
@@ -101,7 +126,6 @@ namespace Hospital_Management_System.Controllers
 
             return View(model);
         }
-
 
         [HttpPost]
         public IActionResult ManageRoles(UserRolesVM model)
@@ -122,8 +146,7 @@ namespace Hospital_Management_System.Controllers
             return RedirectToAction("Index");
         }
 
-       
-
+        [HttpGet]
         public IActionResult ManageFiles(string uid)
         {
             var user = _userService.GetUserByUId(uid);
@@ -143,7 +166,6 @@ namespace Hospital_Management_System.Controllers
             return View(userFile);
         }
 
-
         [HttpPost]
         public IActionResult ManageFiles(UserFile userFile, IFormFile fileUser)
         {
@@ -154,7 +176,6 @@ namespace Hospital_Management_System.Controllers
             var user = _userService.GetUserById(userFile.UserId);
             return RedirectToAction(nameof(ManageFiles), new { uid = user?.UID });
         }
-
 
         public IActionResult DeleteFile(int id, string uid)
         {

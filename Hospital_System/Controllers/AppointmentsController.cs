@@ -1,4 +1,6 @@
 ﻿using Hospital_Management_System.Application.Dtos.AppointmentsDtos;
+using Hospital_Management_System.Application.Dtos.DoctorsDtos;
+using Hospital_Management_System.Application.Dtos.PatientsDtos;
 using Hospital_Management_System.Application.Services.Base;
 using Hospital_Management_System.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -8,13 +10,6 @@ namespace Hospital_Management_System.Controllers
 {
     public class AppointmentsController : Controller
     {
-
-        //private readonly IUnitOfWork _unitOfWork;
-        //public AppointmentsController(IUnitOfWork unitOfWork)
-        //{
-        //    _unitOfWork = unitOfWork;
-        //}
-
         private readonly IAppointmentService _appointmentService;
 
         public AppointmentsController(IAppointmentService appointmentService)
@@ -30,14 +25,14 @@ namespace Hospital_Management_System.Controllers
 
         public void GetDoctor()
         {
-            IEnumerable<Doctor> doctors = _appointmentService.GetAllDoctors();
+            IEnumerable<DoctorDto> doctors = _appointmentService.GetAllDoctors();
             SelectList doctorSelectList = new SelectList(doctors, "Id", "Name");
             ViewBag.DoctorSelectList = doctorSelectList;
         }
 
         public void GetPatient()
         {
-            IEnumerable<Patient> patients = _appointmentService.GetAllPatients();
+            IEnumerable<PatientDto> patients = _appointmentService.GetAllPatients();
             SelectList patientSelectList = new SelectList(patients, "Id", "Name");
             ViewBag.patientSelectList = patientSelectList;
         }
@@ -49,7 +44,6 @@ namespace Hospital_Management_System.Controllers
             GetPatient();
             return View();
         }
-
 
         [HttpPost]
         public IActionResult Create(CreateAppointmentDto appointmentDto)
@@ -64,7 +58,6 @@ namespace Hospital_Management_System.Controllers
             return View(appointmentDto);
         }
 
-
         [HttpGet]
         public IActionResult Edit(string uid)
         {
@@ -76,7 +69,6 @@ namespace Hospital_Management_System.Controllers
                 return NotFound();
             }
 
-            //Mapping
             var update = new UpdateAppointmentDto
             {
                 Id = appointment.Id,
@@ -86,19 +78,16 @@ namespace Hospital_Management_System.Controllers
                 Status = appointment.Status,
                 PatientId = appointment.PatientId,
                 DoctorId = appointment.DoctorId,
-
             };
 
             return View(update);
         }
-
 
         [HttpPost]
         public IActionResult Edit(UpdateAppointmentDto appointmentDto)
         {
             if (ModelState.IsValid)
             {
-
                 _appointmentService.UpdateAppointment(appointmentDto);
                 return RedirectToAction("Index");
             }
@@ -121,21 +110,16 @@ namespace Hospital_Management_System.Controllers
             return View(appointment);
         }
 
-
         [HttpPost]
-        public IActionResult Delete(Appointment appointment)
+        public IActionResult Delete(AppointmentDto appointmentDto)
         {
             GetDoctor();
             GetPatient();
-            var oldAppointment = _appointmentService.GetByUId(appointment.UID);
-            if (oldAppointment != null)
-            {
-                _appointmentService.DeleteAppointment(oldAppointment);
-                return RedirectToAction("Index");
-            }
-            return View(appointment);
-        }
 
+            
+            _appointmentService.DeleteAppointment(appointmentDto);
+            return RedirectToAction("Index");
+        }
 
         public IActionResult ManageFiles(string uid)
         {
@@ -155,7 +139,6 @@ namespace Hospital_Management_System.Controllers
             return View(appointmentFile);
         }
 
-
         [HttpPost]
         public IActionResult ManageFiles(AppointmentFile appointmentFile, IFormFile fileAppointment)
         {
@@ -163,7 +146,6 @@ namespace Hospital_Management_System.Controllers
 
             var appointment = _appointmentService.GetById(appointmentFile.AppointmentId);
             return RedirectToAction(nameof(ManageFiles), new { uid = appointment?.UID });
-
         }
 
         public IActionResult DeleteFile(int id, string uid)
@@ -171,6 +153,5 @@ namespace Hospital_Management_System.Controllers
             _appointmentService.DeleteAppointmentFile(id);
             return RedirectToAction(nameof(ManageFiles), new { uid = uid });
         }
-
     }
 }

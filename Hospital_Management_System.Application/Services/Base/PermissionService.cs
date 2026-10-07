@@ -27,14 +27,30 @@ namespace Hospital_Management_System.Application.Services.Base
             return permissionDtos;
         }
 
-        public Permission GetPermissionById(int id)
+        public PermissionDto GetPermissionById(int id)
         {
-            return _unitOfWork.PermissionRepo.GetById(id);
+            var p = _unitOfWork.PermissionRepo.GetById(id);
+
+            var permissionDto = new PermissionDto
+            {
+                Id = p.Id,
+                UID = p.UID,
+                Name = p.Name
+            };
+            return permissionDto;
         }
 
-        public Permission GetPermissionByUId(string uid)
+        public PermissionDto GetPermissionByUId(string uid)
         {
-            return _unitOfWork.PermissionRepo.GetByUId(uid);
+            var p = _unitOfWork.PermissionRepo.GetByUId(uid);
+
+            var permissionDto = new PermissionDto
+            {
+                Id = p.Id,
+                UID = p.UID,
+                Name = p.Name
+            };
+            return permissionDto;
         }
 
         public void AddPermission(CreatePermissionDto permissionDto)
@@ -67,9 +83,9 @@ namespace Hospital_Management_System.Application.Services.Base
             }
         }
 
-        public void DeletePermission(string uid)
+        public void DeletePermission(PermissionDto permissionDto)
         {
-            var oldPermission = _unitOfWork.PermissionRepo.GetByUId(uid);
+            var oldPermission = _unitOfWork.PermissionRepo.GetByUId(permissionDto.UID);
             if (oldPermission != null)
             {
                 _unitOfWork.PermissionRepo.Delete(oldPermission);

@@ -4,12 +4,10 @@ using Hospital_Management_System.Infrastructure.Repositories.Base;
 using Hospital_Management_System.Application.Services.Base;
 using Microsoft.AspNetCore.Http;
 
-
 namespace Hospital_Management_System.Application.Services.Base
 {
     public class DepartmentService : IDepartmentService
     {
-
         private readonly IUnitOfWork _unitOfWork;
 
         public DepartmentService(IUnitOfWork unitOfWork)
@@ -29,14 +27,35 @@ namespace Hospital_Management_System.Application.Services.Base
             return departmentDto;
         }
 
-        public Department GetByUId(string uid)
+        public DepartmentDto GetByUId(string uid)
         {
-            return _unitOfWork.DepartmentRepo.GetByUId(uid);
+            var d = _unitOfWork.DepartmentRepo.GetByUId(uid);
+
+            var departmentDto = new DepartmentDto
+            {
+                Id = d.Id,
+                UID = d.UID,
+                Name = d.Name,
+                Location = d.Location
+            };
+            return departmentDto;
         }
-        public Department GetById(int id)
+
+
+        public DepartmentDto GetById(int id)
         {
-           return _unitOfWork.DepartmentRepo.GetAll().FirstOrDefault(a => a.Id == id);
+            var d = _unitOfWork.DepartmentRepo.GetAll().FirstOrDefault(a => a.Id == id);
+
+            var departmentDto= new DepartmentDto
+            {
+                Id = d.Id,
+                UID = d.UID,
+                Name = d.Name,
+                Location = d.Location
+            };
+            return departmentDto;
         }
+
         public void AddDepartment(CreateDepartmentDto departmentDto, IFormFile image)
         {
             var dept = new Department
@@ -72,9 +91,9 @@ namespace Hospital_Management_System.Application.Services.Base
             _unitOfWork.Save();
         }
 
-        public void DeleteDepartment(Department department)
+        public void DeleteDepartment(DepartmentDto departmentDto)
         {
-            var oldDept = _unitOfWork.DepartmentRepo.GetByUId(department.UID);
+            var oldDept = _unitOfWork.DepartmentRepo.GetByUId(departmentDto.UID);
             if (oldDept != null)
             {
                 _unitOfWork.DepartmentRepo.Delete(oldDept);

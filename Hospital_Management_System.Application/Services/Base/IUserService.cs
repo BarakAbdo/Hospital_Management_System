@@ -2,17 +2,17 @@
 using Hospital_Management_System.Application.Dtos.UsersDtos;
 using Microsoft.AspNetCore.Http;
 
-
 namespace Hospital_Management_System.Application.Services.Base
 {
     public interface IUserService
     {
         IEnumerable<UserDto> GetAllUsers();
-        User GetUserById(int id);
-        User GetUserByUId(string uid);
+        UserDto GetUserById(int id);
+        UserDto GetUserByUId(string uid);
+
         void AddUser(CreateUserDto userDto);
         void UpdateUser(UpdateUserDto userDto);
-        void DeleteUser(string uid);
+        void DeleteUser(UserDto userDto);
 
         IEnumerable<Role> GetAllRoles();
         IEnumerable<int> GetUserRoleIds(int userId);

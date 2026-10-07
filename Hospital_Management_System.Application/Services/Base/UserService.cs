@@ -1,7 +1,6 @@
 ﻿using Hospital_Management_System.Domain.Models;
 using Hospital_Management_System.Application.Dtos.UsersDtos;
 using Hospital_Management_System.Infrastructure.Repositories.Base;
-using Org.BouncyCastle.Crypto.Generators;
 using Microsoft.AspNetCore.Http;
 
 namespace Hospital_Management_System.Application.Services.Base
@@ -19,7 +18,7 @@ namespace Hospital_Management_System.Application.Services.Base
         {
             var users = _unitOfWork.UserRepo.GetAll();
 
-            return users.Select(u => new UserDto
+            var userDto = users.Select(u => new UserDto
             {
                 Id = u.Id,
                 UID = u.UID,
@@ -27,16 +26,37 @@ namespace Hospital_Management_System.Application.Services.Base
                 Email = u.Email,
                 Username = u.Username
             }).ToList();
+            return userDto;
         }
 
-        public User GetUserById(int id)
+        public UserDto GetUserById(int id)
         {
-            return _unitOfWork.UserRepo.GetById(id);
+            var u = _unitOfWork.UserRepo.GetById(id);
+
+            var userDto = new UserDto
+            {
+                Id = u.Id,
+                UID = u.UID,
+                Name = u.Name,
+                Email = u.Email,
+                Username = u.Username
+            };
+            return userDto;
         }
 
-        public User GetUserByUId(string uid)
+        public UserDto GetUserByUId(string uid)
         {
-            return _unitOfWork.UserRepo.GetByUId(uid);
+            var u = _unitOfWork.UserRepo.GetByUId(uid);
+
+            var userDto = new UserDto
+            {
+                Id = u.Id,
+                UID = u.UID,
+                Name = u.Name,
+                Email = u.Email,
+                Username = u.Username
+            };
+            return userDto;
         }
 
         public void AddUser(CreateUserDto userDto)
@@ -81,9 +101,9 @@ namespace Hospital_Management_System.Application.Services.Base
             _unitOfWork.Save();
         }
 
-        public void DeleteUser(string uid)
+        public void DeleteUser(UserDto userDto)
         {
-            var oldUser = _unitOfWork.UserRepo.GetByUId(uid);
+            var oldUser = _unitOfWork.UserRepo.GetByUId(userDto.UID);
             if (oldUser != null)
             {
                 _unitOfWork.UserRepo.Delete(oldUser);
@@ -100,7 +120,7 @@ namespace Hospital_Management_System.Application.Services.Base
         {
             return _unitOfWork.UserRepo.RoleUsers
                 .Where(x => x.UserId == userId)
-                .Select(x => (int)x.RoleId) 
+                .Select(x => (int)x.RoleId)
                 .ToList();
         }
 
@@ -142,7 +162,7 @@ namespace Hospital_Management_System.Application.Services.Base
                 return string.Empty;
             }
 
-            string fileName = name + "_" + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+            string fileName = (string.IsNullOrEmpty(name) ? "File" : name) + "_" + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
 
             string folderPath = Path.Combine(
                 Directory.GetCurrentDirectory(),

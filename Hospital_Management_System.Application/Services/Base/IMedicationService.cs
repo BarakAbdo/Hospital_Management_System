@@ -7,13 +7,13 @@ namespace Hospital_Management_System.Application.Services.Base
     public interface IMedicationService
     {
         IEnumerable<MedicationDto> GetAllMedications();
-        Medication GetMedicationById(int id);
-        Medication GetMedicationByUId(string uid);
+        MedicationDto GetMedicationById(int id);
+        MedicationDto GetMedicationByUId(string uid);
+
         void AddMedication(CreateMedicationDto medicationDto);
         void UpdateMedication(UpdateMedicationDto medicationDto);
-        void DeleteMedication(Medication medication);
+        void DeleteMedication(MedicationDto medicationDto);
 
-        // دوال الملفات
         IEnumerable<MedicationFile> GetMedicationFiles(int medicationId);
         void AddMedicationFile(MedicationFile medicationFile, IFormFile fileMedication);
         void DeleteMedicationFile(int fileId);

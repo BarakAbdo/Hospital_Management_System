@@ -1,4 +1,6 @@
 ﻿using Hospital_Management_System.Application.Dtos.AppointmentsDtos;
+using Hospital_Management_System.Application.Dtos.DoctorsDtos;
+using Hospital_Management_System.Application.Dtos.PatientsDtos;
 using Hospital_Management_System.Domain.Models;
 using Hospital_Management_System.Infrastructure.Repositories.Base;
 using Microsoft.AspNetCore.Http;
@@ -33,14 +35,46 @@ namespace Hospital_Management_System.Application.Services.Base
             return appointmentDtos;
         }
 
-        public IEnumerable<Doctor> GetAllDoctors()
+        public IEnumerable<DoctorDto> GetAllDoctors()
         {
-            return _unitOfWork.AppointmentRepo.Doctors.ToList();
-        }
+            var doctors = _unitOfWork.AppointmentRepo.Doctors.ToList();
+            List<DoctorDto> doctorDtos = new List<DoctorDto>();
 
-        public IEnumerable<Patient> GetAllPatients()
+            foreach (var d in doctors)
+            {
+                doctorDtos.Add(new DoctorDto
+                {
+                    Id = d.Id,
+                    UID = d.UID,
+                    Name = d.Name,
+                    Specialization = d.Specialization,
+                    Phone = d.Phone,
+                    DepartmentId = d.DepartmentId,
+                    DepartmentName = d.Department?.Name
+                });
+            }
+
+            return doctorDtos;
+        }
+        public IEnumerable<PatientDto> GetAllPatients()
         {
-            return _unitOfWork.AppointmentRepo.Patients.ToList();
+            var patients = _unitOfWork.AppointmentRepo.Patients.ToList();
+            List<PatientDto> patientDtos = new List<PatientDto>();
+
+            foreach (var p in patients)
+            {
+                patientDtos.Add(new PatientDto
+                {
+                    Id = p.Id,
+                    UID = p.UID,
+                    Name = p.Name,
+                    Gender = p.Gender,
+                    Phone = p.Phone,
+                    DateOfBirth = p.DateOfBirth
+                });
+            }
+
+            return patientDtos;
         }
 
         public void AddAppointment(CreateAppointmentDto appointmentDto)
@@ -78,9 +112,9 @@ namespace Hospital_Management_System.Application.Services.Base
             _unitOfWork.Save();
         }
 
-        public void DeleteAppointment(Appointment appointment)
+        public void DeleteAppointment(AppointmentDto appointmentDto)
         {
-            var oldAppointment = _unitOfWork.AppointmentRepo.GetByUId(appointment.UID);
+            var oldAppointment = _unitOfWork.AppointmentRepo.GetByUId(appointmentDto.UID);
             if (oldAppointment != null)
             {
                 _unitOfWork.AppointmentRepo.Delete(oldAppointment);
@@ -88,14 +122,44 @@ namespace Hospital_Management_System.Application.Services.Base
             }
         }
 
-        public Appointment GetByUId(string uid)
+        public AppointmentDto GetByUId(string uid)
         {
-            return _unitOfWork.AppointmentRepo.GetByUId(uid);
+            var a = _unitOfWork.AppointmentRepo.GetByUId(uid);
+
+            var appointmentDto = new AppointmentDto
+            {
+                Id = a.Id,
+                UID = a.UID,
+                Date = a.Date,
+                Time = a.Time,
+                Status = a.Status,
+                PatientId = a.PatientId,
+                DoctorId = a.DoctorId,
+                PatientName = a.Patient?.Name,
+                DoctorName = a.Doctor?.Name
+            };
+
+            return appointmentDto;
         }
 
-        public Appointment GetById(int id)
+        public AppointmentDto GetById(int id)
         {
-            return _unitOfWork.AppointmentRepo.GetById(id);
+            var a = _unitOfWork.AppointmentRepo.GetById(id);
+
+            var appointmentDto = new AppointmentDto
+            {
+                Id = a.Id,
+                UID = a.UID,
+                Date = a.Date,
+                Time = a.Time,
+                Status = a.Status,
+                PatientId = a.PatientId,
+                DoctorId = a.DoctorId,
+                PatientName = a.Patient?.Name,
+                DoctorName = a.Doctor?.Name
+            };
+
+            return appointmentDto;
         }
 
         public IEnumerable<AppointmentFile> GetAppointmentFiles(int appointmentId)
@@ -104,8 +168,6 @@ namespace Hospital_Management_System.Application.Services.Base
                 .Where(e => e.AppointmentId == appointmentId)
                 .ToList();
         }
-
-       
 
         public void DeleteAppointmentFile(int fileId)
         {

@@ -1,5 +1,4 @@
-﻿
-using Hospital_Management_System.Application.Dtos.DoctorsDtos;
+﻿using Hospital_Management_System.Application.Dtos.DoctorsDtos;
 using Hospital_Management_System.Application.Services.Base;
 using Hospital_Management_System.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -16,35 +15,29 @@ namespace Hospital_Management_System.Controllers
             _doctorService = doctorService;
         }
 
-
         [HttpGet]
-       
-          public IActionResult Index()
-          {
+        public IActionResult Index()
+        {
             var doctors = _doctorService.GetAllDoctors();
             return View(doctors);
         }
 
-        
-
-        public void GetDepartments() 
+        public void GetDepartments()
         {
-            IEnumerable<Department> departments = _doctorService.GetAllDepartments();
-            SelectList departmentSelectList = new SelectList(departments,"Id","Name");
+            var departments = _doctorService.GetAllDepartments();
+            SelectList departmentSelectList = new SelectList(departments, "Id", "Name");
             ViewBag.departmentSelectList = departmentSelectList;
         }
 
-
         [HttpGet]
-        public IActionResult Create() 
+        public IActionResult Create()
         {
             GetDepartments();
             return View();
         }
 
-
         [HttpPost]
-        public IActionResult Create(CreateDoctorDto doctor) 
+        public IActionResult Create(CreateDoctorDto doctor)
         {
             if (ModelState.IsValid)
             {
@@ -55,13 +48,12 @@ namespace Hospital_Management_System.Controllers
             return View(doctor);
         }
 
-        
         [HttpGet]
-        public IActionResult Edit(string uid) 
+        public IActionResult Edit(string uid)
         {
             GetDepartments();
             var doctor = _doctorService.GetDoctorByUId(uid);
-            if (doctor == null) 
+            if (doctor == null)
             {
                 return NotFound();
             }
@@ -74,13 +66,12 @@ namespace Hospital_Management_System.Controllers
                 Specialization = doctor.Specialization,
                 Phone = doctor.Phone,
                 DepartmentId = doctor.DepartmentId
-
             };
             return View(update);
-            
         }
+
         [HttpPost]
-        public IActionResult Edit(UpdateDoctorDto doctor) 
+        public IActionResult Edit(UpdateDoctorDto doctor)
         {
             if (ModelState.IsValid)
             {
@@ -91,10 +82,9 @@ namespace Hospital_Management_System.Controllers
             GetDepartments();
             return View(doctor);
         }
-           
-        
+
         [HttpGet]
-        public IActionResult Delete(string uid) 
+        public IActionResult Delete(string uid)
         {
             GetDepartments();
             var doctor = _doctorService.GetDoctorByUId(uid);
@@ -102,12 +92,23 @@ namespace Hospital_Management_System.Controllers
             {
                 return NotFound();
             }
-            return View(doctor);
+
+            var doctorDto = new DoctorDto
+            {
+                Id = doctor.Id,
+                UID = doctor.UID,
+                Name = doctor.Name,
+                Specialization = doctor.Specialization,
+                Phone = doctor.Phone,
+                DepartmentId = doctor.DepartmentId,
+                DepartmentName = doctor.DepartmentName
+            };
+
+            return View(doctorDto);
         }
 
-
         [HttpPost]
-        public IActionResult Delete(Doctor doctor) 
+        public IActionResult Delete(DoctorDto doctor)
         {
             var oldDoctor = _doctorService.GetDoctorByUId(doctor.UID);
             if (oldDoctor != null)
@@ -131,12 +132,11 @@ namespace Hospital_Management_System.Controllers
             ViewBag.DoctorName = doctor.Name;
             ViewBag.Files = files;
 
-            DoctorFile doctorFile = new DoctorFile();
+            DoctorFile doctorFile = new DoctorFile(); 
             doctorFile.DoctorId = doctor.Id;
 
             return View(doctorFile);
         }
-
 
         [HttpPost]
         public IActionResult ManageFiles(DoctorFile doctorFile, IFormFile fileDoctor)
@@ -146,6 +146,7 @@ namespace Hospital_Management_System.Controllers
             var doctor = _doctorService.GetDoctorById(doctorFile.DoctorId);
             return RedirectToAction(nameof(ManageFiles), new { uid = doctor?.UID });
         }
+
 
 
 

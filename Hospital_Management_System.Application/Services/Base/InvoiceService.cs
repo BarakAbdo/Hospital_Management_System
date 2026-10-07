@@ -1,4 +1,5 @@
 ﻿using Hospital_Management_System.Application.Dtos.InvoicesDtos;
+using Hospital_Management_System.Application.Dtos.PatientsDtos;
 using Hospital_Management_System.Domain.Models;
 using Hospital_Management_System.Infrastructure.Repositories.Base;
 using Microsoft.AspNetCore.Http;
@@ -32,19 +33,49 @@ namespace Hospital_Management_System.Application.Services.Base
             return invoiceDtos;
         }
 
-        public IEnumerable<Patient> GetAllPatients()
+        public IEnumerable<PatientDto> GetAllPatients()
         {
-            return _unitOfWork.InvoiceRepo.Patients.ToList();
+            var patientDto = _unitOfWork.InvoiceRepo.Patients.Select(p => new PatientDto
+            {
+                Id = p.Id,
+                UID = p.UID,
+                Name = p.Name
+            }).ToList();
+            return patientDto;
         }
 
-        public Invoice GetInvoiceById(int id)
+        public InvoiceDto GetInvoiceById(int id)
         {
-            return _unitOfWork.InvoiceRepo.GetById(id);
+            var i = _unitOfWork.InvoiceRepo.GetById(id);
+
+            var invoiceDto = new InvoiceDto
+            {
+                Id = i.Id,
+                UID = i.UID,
+                Amount = i.Amount,
+                Date = i.Date,
+                Status = i.Status,
+                PatientId = i.PatientId,
+                PatientName = i.Patients?.Name
+            };
+            return invoiceDto;
         }
 
-        public Invoice GetInvoiceByUId(string uid)
+        public InvoiceDto GetInvoiceByUId(string uid)
         {
-            return _unitOfWork.InvoiceRepo.GetByUId(uid);
+            var i = _unitOfWork.InvoiceRepo.GetByUId(uid);
+
+            var invoiceDto = new InvoiceDto
+            {
+                Id = i.Id,
+                UID = i.UID,
+                Amount = i.Amount,
+                Date = i.Date,
+                Status = i.Status,
+                PatientId = i.PatientId,
+                PatientName = i.Patients?.Name
+            };
+            return invoiceDto;
         }
 
         public void AddInvoice(CreateInvoiceDto invoiceDto)
@@ -64,7 +95,7 @@ namespace Hospital_Management_System.Application.Services.Base
 
         public void UpdateInvoice(UpdateInvoiceDto invoiceDto)
         {
-            if (invoiceDto.UID == null)
+            if (string.IsNullOrEmpty(invoiceDto.UID))
             {
                 invoiceDto.UID = Guid.NewGuid().ToString();
             }
@@ -83,9 +114,9 @@ namespace Hospital_Management_System.Application.Services.Base
             _unitOfWork.Save();
         }
 
-        public void DeleteInvoice(Invoice invoice)
+        public void DeleteInvoice(InvoiceDto invoiceDto)
         {
-            var oldInvoice = _unitOfWork.InvoiceRepo.GetByUId(invoice.UID);
+            var oldInvoice = _unitOfWork.InvoiceRepo.GetByUId(invoiceDto.UID);
             if (oldInvoice != null)
             {
                 _unitOfWork.InvoiceRepo.Delete(oldInvoice);
@@ -121,7 +152,7 @@ namespace Hospital_Management_System.Application.Services.Base
 
         private string UploadFiles(IFormFile file, string name)
         {
-            string fileName = name + "_" + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+            string fileName = (string.IsNullOrEmpty(name) ? "File" : name) + "_" + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
 
             string folderPath = Path.Combine(
                 Directory.GetCurrentDirectory(),

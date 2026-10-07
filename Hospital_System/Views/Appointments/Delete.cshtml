@@ -1,5 +1,5 @@
-﻿@using Hospital_Management_System.Domain.Models
-@model Appointment
+﻿@using Hospital_Management_System.Application.Dtos.AppointmentsDtos
+@model AppointmentDto
 @{
 	ViewData["Title"] = "Delete Appointment";
 }
@@ -10,13 +10,16 @@
 		<div class="form-group">
 
 			<input asp-for="Id" class="form-control" hidden /><br>
-			<input asp-for="UID" hidden readonly />
+			
+			<input asp-for="UID" hidden  />
+			<input asp-for="Id" hidden/>
+
 
 			<label class="control-label">Patient </label><br>
-			<input asp-for="Patient.Name" class ="form-control" readonly /><br>
+			<input asp-for="PatientName" class ="form-control" readonly /><br>
 
 			<label class="control-label">Doctor </label><br>
-			<input asp-for="Doctor.Name" class="form-control" readonly /><br>
+			<input asp-for="DoctorName" class="form-control" readonly /><br>
 
 			<label class="control-label">Date </label><br>
 			<input asp-for="Date" class="form-control" readonly /><br>

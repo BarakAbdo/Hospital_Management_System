@@ -3,7 +3,6 @@ using Hospital_Management_System.Domain.Models;
 using Hospital_Management_System.Infrastructure.Repositories.Base;
 using Microsoft.AspNetCore.Http;
 
-
 namespace Hospital_Management_System.Application.Services.Base
 {
     public class PrescriptionService : IPrescriptionService
@@ -19,7 +18,7 @@ namespace Hospital_Management_System.Application.Services.Base
         {
             var prescriptions = _unitOfWork.PrescriptionRepo.GetAllPre();
 
-            return prescriptions.Select(p => new PrescriptionDto
+            var prescriptionDto = prescriptions.Select(p => new PrescriptionDto
             {
                 Id = p.Id,
                 UID = p.UID,
@@ -32,16 +31,47 @@ namespace Hospital_Management_System.Application.Services.Base
                 DoctorName = p.Doctor?.Name,
                 MedicationName = p.Medication?.Name
             }).ToList();
+            return prescriptionDto;
         }
 
-        public Prescription GetPrescriptionById(int id)
+        public PrescriptionDto GetPrescriptionById(int id)
         {
-            return _unitOfWork.PrescriptionRepo.GetById(id);
+            var p = _unitOfWork.PrescriptionRepo.GetById(id);
+
+            var prescriptionDto = new PrescriptionDto
+            {
+                Id = p.Id,
+                UID = p.UID,
+                Dosage = p.Dosage,
+                Duration = p.Duration,
+                PatientId = p.PatientId,
+                DoctorId = p.DoctorId,
+                MedicationId = p.MedicationId,
+                PatientName = p.Patient?.Name,
+                DoctorName = p.Doctor?.Name,
+                MedicationName = p.Medication?.Name
+            };
+            return prescriptionDto;
         }
 
-        public Prescription GetPrescriptionByUId(string uid)
+        public PrescriptionDto GetPrescriptionByUId(string uid)
         {
-            return _unitOfWork.PrescriptionRepo.GetByUId(uid);
+            var p = _unitOfWork.PrescriptionRepo.GetByUId(uid);
+
+            var prescriptionDto = new PrescriptionDto
+            {
+                Id = p.Id,
+                UID = p.UID,
+                Dosage = p.Dosage,
+                Duration = p.Duration,
+                PatientId = p.PatientId,
+                DoctorId = p.DoctorId,
+                MedicationId = p.MedicationId,
+                PatientName = p.Patient?.Name,
+                DoctorName = p.Doctor?.Name,
+                MedicationName = p.Medication?.Name
+            };
+            return prescriptionDto;
         }
 
         public IEnumerable<Patient> GetAllPatients()
@@ -97,9 +127,9 @@ namespace Hospital_Management_System.Application.Services.Base
             _unitOfWork.Save();
         }
 
-        public void DeletePrescription(string uid)
+        public void DeletePrescription(PrescriptionDto prescriptionDto)
         {
-            var oldPrescription = _unitOfWork.PrescriptionRepo.GetByUId(uid);
+            var oldPrescription = _unitOfWork.PrescriptionRepo.GetByUId(prescriptionDto.UID);
             if (oldPrescription != null)
             {
                 _unitOfWork.PrescriptionRepo.Delete(oldPrescription);
@@ -135,7 +165,7 @@ namespace Hospital_Management_System.Application.Services.Base
 
         private string UploadFiles(IFormFile file, string name)
         {
-            string fileName = name + "_" + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+            string fileName = (string.IsNullOrEmpty(name) ? "File" : name) + "_" + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
 
             string folderPath = Path.Combine(
                 Directory.GetCurrentDirectory(),

@@ -31,14 +31,36 @@ namespace Hospital_Management_System.Application.Services.Base
             return medicationDtos;
         }
 
-        public Medication GetMedicationById(int id)
+        public MedicationDto GetMedicationById(int id)
         {
-            return _unitOfWork.MedicationRepo.GetById(id);
+            var m = _unitOfWork.MedicationRepo.GetById(id);
+
+            var medicationDtos = new MedicationDto
+            {
+                Id = m.Id,
+                UID = m.UID,
+                Name = m.Name,
+                Description = m.Description,
+                Price = m.Price,
+                Stock = m.Stock
+            };
+            return medicationDtos;
         }
 
-        public Medication GetMedicationByUId(string uid)
+        public MedicationDto GetMedicationByUId(string uid)
         {
-            return _unitOfWork.MedicationRepo.GetByUId(uid);
+            var m = _unitOfWork.MedicationRepo.GetByUId(uid);
+
+            var medicationDtos = new MedicationDto
+            {
+                Id = m.Id,
+                UID = m.UID,
+                Name = m.Name,
+                Description = m.Description,
+                Price = m.Price,
+                Stock = m.Stock
+            };
+            return medicationDtos;
         }
 
         public void AddMedication(CreateMedicationDto medicationDto)
@@ -58,7 +80,7 @@ namespace Hospital_Management_System.Application.Services.Base
 
         public void UpdateMedication(UpdateMedicationDto medicationDto)
         {
-            if (medicationDto.UID == null)
+            if (string.IsNullOrEmpty(medicationDto.UID))
             {
                 medicationDto.UID = Guid.NewGuid().ToString();
             }
@@ -77,9 +99,9 @@ namespace Hospital_Management_System.Application.Services.Base
             _unitOfWork.Save();
         }
 
-        public void DeleteMedication(Medication medication)
+        public void DeleteMedication(MedicationDto medicationDto)
         {
-            var oldMedication = _unitOfWork.MedicationRepo.GetByUId(medication.UID);
+            var oldMedication = _unitOfWork.MedicationRepo.GetByUId(medicationDto.UID);
             if (oldMedication != null)
             {
                 _unitOfWork.MedicationRepo.Delete(oldMedication);
@@ -109,13 +131,13 @@ namespace Hospital_Management_System.Application.Services.Base
             if (file != null)
             {
                 _unitOfWork.MedicationRepo.DeleteMedicationFile(file);
-                _unitOfWork.MedicationRepo.Save(); // أو _unitOfWork.Save() بناءً على ما تفضله
+                _unitOfWork.Save();
             }
         }
 
         private string UploadFiles(IFormFile file, string name)
         {
-            string fileName = name + "_" + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+            string fileName = (string.IsNullOrEmpty(name) ? "File" : name) + "_" + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
 
             string folderPath = Path.Combine(
                 Directory.GetCurrentDirectory(),

@@ -1,5 +1,5 @@
-﻿@using Hospital_Management_System.Domain.Models
-@model MedicalRecord
+﻿@using Hospital_Management_System.Application.Dtos.MedicalRecordsDtos
+@model MedicalRecordDto
 @{
 	ViewData["Title"] = "Delete MedicalRecord";
 }
@@ -7,7 +7,8 @@
 <div class="container">
 	<form method="post" asp-action="Delete">
 
-		<input type="hidden" asp-for="UID" />
+		<input asp-for="Id" hidden/>
+		<input asp-for="UID" hidden/>
 
 		<div class="form-group">
 			<label class="control-label">Diagnosis</label><br>
@@ -17,10 +18,10 @@
 			<input asp-for="Notes" class="form-control" readonly /><br>
 
 			<label class="control-label">Patient</label><br>
-			<input asp-for="Patient.Name" class="form-control" readonly /><br>
+			<input asp-for="PatientName" class="form-control" readonly /><br>
 
 			<label class="control-label">Doctor</label><br>
-			<input asp-for="Doctor.Name" class="form-control" readonly /><br>
+			<input asp-for="DoctorName" class="form-control" readonly /><br>
 
 		</div>
 		<br>

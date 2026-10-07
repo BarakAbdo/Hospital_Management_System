@@ -1,4 +1,5 @@
-﻿using Hospital_Management_System.Application.Dtos.DoctorsDtos;
+﻿using Hospital_Management_System.Application.Dtos.DepartmentDtos;
+using Hospital_Management_System.Application.Dtos.DoctorsDtos;
 using Hospital_Management_System.Domain.Models;
 using Hospital_Management_System.Infrastructure.Repositories.Base;
 using Microsoft.AspNetCore.Http;
@@ -32,19 +33,51 @@ namespace Hospital_Management_System.Application.Services.Base
             return doctorDtos;
         }
 
-        public IEnumerable<Department> GetAllDepartments()
+        public IEnumerable<DepartmentDto> GetAllDepartments()
         {
-            return _unitOfWork.DoctorRepo.Departments.ToList();
+            var departments = _unitOfWork.DoctorRepo.Departments.ToList();
+
+            var departmentDtos = departments.Select(d => new DepartmentDto
+            {
+                Id = d.Id,
+                Name = d.Name,
+                Location = d.Location
+            }).ToList();
+
+            return departmentDtos;
         }
 
-        public Doctor GetDoctorById(int id)
+        public DoctorDto GetDoctorById(int id)
         {
-            return _unitOfWork.DoctorRepo.GetById(id);
+            var d = _unitOfWork.DoctorRepo.GetById(id);
+            if (d == null) return null;
+
+            var doctorDto = new DoctorDto
+            {
+                Id = d.Id,
+                UID = d.UID,
+                Name = d.Name,
+                Specialization = d.Specialization,
+                Phone = d.Phone,
+                DepartmentId = d.DepartmentId
+            };
+            return doctorDto;
         }
 
-        public Doctor GetDoctorByUId(string uid)
+        public DoctorDto GetDoctorByUId(string uid)
         {
-            return _unitOfWork.DoctorRepo.GetByUId(uid);
+            var doctor = _unitOfWork.DoctorRepo.GetByUId(uid);
+            var update = new DoctorDto
+            {
+                Id = doctor.Id,
+                UID = doctor.UID,
+                Name = doctor.Name,
+                Specialization = doctor.Specialization,
+                Phone = doctor.Phone,
+                DepartmentId = doctor.DepartmentId,
+                DepartmentName = doctor.Department?.Name 
+            };
+            return update;
         }
 
         public void AddDoctor(CreateDoctorDto doctorDto)
@@ -76,22 +109,24 @@ namespace Hospital_Management_System.Application.Services.Base
                 Name = doctorDto.Name,
                 Specialization = doctorDto.Specialization,
                 Phone = doctorDto.Phone,
-                DepartmentId = doctorDto.DepartmentId
+                DepartmentId = doctorDto.DepartmentId,
             };
 
             _unitOfWork.DoctorRepo.Update(doctor);
             _unitOfWork.Save();
         }
 
-        public void DeleteDoctor(Doctor doctor)
+        public void DeleteDoctor(DoctorDto doctorDto)
         {
-            var oldDoctor = _unitOfWork.DoctorRepo.GetByUId(doctor.UID);
+            var oldDoctor = _unitOfWork.DoctorRepo.GetByUId(doctorDto.UID);
             if (oldDoctor != null)
             {
                 _unitOfWork.DoctorRepo.Delete(oldDoctor);
                 _unitOfWork.Save();
             }
         }
+
+       
 
         public IEnumerable<DoctorFile> GetDoctorFiles(int doctorId)
         {

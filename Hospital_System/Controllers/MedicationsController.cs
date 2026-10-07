@@ -1,6 +1,4 @@
-﻿
-
-using Hospital_Management_System.Application.Dtos.MedicationsDtos;
+﻿using Hospital_Management_System.Application.Dtos.MedicationsDtos;
 using Hospital_Management_System.Application.Services.Base;
 using Hospital_Management_System.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -16,24 +14,21 @@ namespace Hospital_Management_System.Controllers
             _medicationService = medicationService;
         }
 
-
         [HttpGet]
-        public IActionResult Index() 
+        public IActionResult Index()
         {
             var medications = _medicationService.GetAllMedications();
             return View(medications);
-            
         }
 
         [HttpGet]
-        public IActionResult Create() 
+        public IActionResult Create()
         {
-            return View();  
-        }  
-
+            return View();
+        }
 
         [HttpPost]
-        public IActionResult Create(CreateMedicationDto medication) 
+        public IActionResult Create(CreateMedicationDto medication)
         {
             if (ModelState.IsValid)
             {
@@ -42,8 +37,9 @@ namespace Hospital_Management_System.Controllers
             }
             return View(medication);
         }
+
         [HttpGet]
-        public IActionResult Edit(string uid) 
+        public IActionResult Edit(string uid)
         {
             var medication = _medicationService.GetMedicationByUId(uid);
             if (medication == null)
@@ -63,9 +59,8 @@ namespace Hospital_Management_System.Controllers
             return View(update);
         }
 
-
         [HttpPost]
-        public IActionResult Edit(UpdateMedicationDto medication) 
+        public IActionResult Edit(UpdateMedicationDto medication)
         {
             if (ModelState.IsValid)
             {
@@ -73,12 +68,10 @@ namespace Hospital_Management_System.Controllers
                 return RedirectToAction("Index");
             }
             return View(medication);
-
         }
 
-
         [HttpGet]
-        public IActionResult Delete(string uid) 
+        public IActionResult Delete(string uid)
         {
             var medication = _medicationService.GetMedicationByUId(uid);
             if (medication == null)
@@ -88,23 +81,12 @@ namespace Hospital_Management_System.Controllers
             return View(medication);
         }
 
-
         [HttpPost]
-        public IActionResult Delete(Medication medication) 
+        public IActionResult Delete(MedicationDto medication)
         {
-            if (ModelState.IsValid)
-            {
-                var oldMedication = _medicationService.GetMedicationByUId(medication.UID);
-                if (oldMedication == null)
-                {
-                    return NotFound();
-                }
-                _medicationService.DeleteMedication(oldMedication);
-                return RedirectToAction("Index");
-            }
-            return View(medication);
+            _medicationService.DeleteMedication(medication);
+            return RedirectToAction("Index");
         }
-
 
         [HttpGet]
         public IActionResult ManageFiles(string uid)
@@ -124,7 +106,6 @@ namespace Hospital_Management_System.Controllers
 
             return View(medicationFile);
         }
-
 
         [HttpPost]
         public IActionResult ManageFiles(MedicationFile medicationFile, IFormFile fileMedication)

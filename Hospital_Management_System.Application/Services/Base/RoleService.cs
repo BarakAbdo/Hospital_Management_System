@@ -17,22 +17,39 @@ namespace Hospital_Management_System.Application.Services.Base
         {
             var roles = _unitOfWork.RoleRepo.GetAll();
 
-            return roles.Select(r => new RoleDto
+            var roleDto = roles.Select(r => new RoleDto
             {
                 Id = r.Id,
                 UID = r.UID,
                 Name = r.Name
             }).ToList();
+            return roleDto;
         }
 
-        public Role GetRoleById(int id)
+        public RoleDto GetRoleById(int id)
         {
-            return _unitOfWork.RoleRepo.GetById(id);
+            var r = _unitOfWork.RoleRepo.GetById(id);
+
+            var roleDto = new RoleDto
+            {
+                Id = r.Id,
+                UID = r.UID,
+                Name = r.Name
+            };
+            return roleDto;
         }
 
-        public Role GetRoleByUId(string uid)
+        public RoleDto GetRoleByUId(string uid)
         {
-            return _unitOfWork.RoleRepo.GetByUId(uid);
+            var r = _unitOfWork.RoleRepo.GetByUId(uid);
+
+            var roleDto = new RoleDto
+            {
+                Id = r.Id,
+                UID = r.UID,
+                Name = r.Name
+            };
+            return roleDto;
         }
 
         public void AddRole(CreateRoleDto roleDto)
@@ -65,9 +82,9 @@ namespace Hospital_Management_System.Application.Services.Base
             _unitOfWork.Save();
         }
 
-        public void DeleteRole(string uid)
+        public void DeleteRole(RoleDto roleDto)
         {
-            var oldRole = _unitOfWork.RoleRepo.GetByUId(uid);
+            var oldRole = _unitOfWork.RoleRepo.GetByUId(roleDto.UID);
             if (oldRole != null)
             {
                 _unitOfWork.RoleRepo.Delete(oldRole);

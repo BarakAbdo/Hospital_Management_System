@@ -11,7 +11,7 @@ namespace Hospital_Management_System.Controllers
 
         public DepartmentsController(IDepartmentService departmentService)
         {
-            _departmentService = departmentService;   
+            _departmentService = departmentService;
         }
 
         [HttpGet]
@@ -30,10 +30,9 @@ namespace Hospital_Management_System.Controllers
         [HttpPost]
         public IActionResult Create(CreateDepartmentDto department, IFormFile image)
         {
-
             if (ModelState.IsValid)
             {
-                _departmentService.AddDepartment(department,image);
+                _departmentService.AddDepartment(department, image);
                 return RedirectToAction("Index");
             }
             return View(department);
@@ -54,22 +53,20 @@ namespace Hospital_Management_System.Controllers
                 UID = department.UID,
                 Name = department.Name,
                 Location = department.Location
-
-
             };
             return View(update);
         }
+
         [HttpPost]
         public IActionResult Edit(UpdateDepartmentDto department)
         {
-            
-            
+            if (ModelState.IsValid)
+            {
                 _departmentService.UpdateDepartment(department);
                 return RedirectToAction("Index");
-            
-            //return View(department);
+            }
+            return View(department);
         }
-
 
         [HttpGet]
         public IActionResult Delete(string uid)
@@ -83,14 +80,10 @@ namespace Hospital_Management_System.Controllers
         }
 
         [HttpPost]
-        public IActionResult Delete(Department department)
+        public IActionResult Delete(DepartmentDto department)
         {
-            var oldDepartment = _departmentService.GetByUId(department.UID);
-            if (oldDepartment == null)
-            {
-                return NotFound();
-            }
-            _departmentService.DeleteDepartment(oldDepartment);
+            
+            _departmentService.DeleteDepartment(department);
             return RedirectToAction("Index");
         }
 
@@ -113,7 +106,6 @@ namespace Hospital_Management_System.Controllers
         [HttpPost]
         public IActionResult ManageFiles(DepartmentFile departmentFile, IFormFile fileDepartment)
         {
-           
             _departmentService.AddDepartmentFile(departmentFile, fileDepartment);
             var department = _departmentService.GetById(departmentFile.DepartmentId);
             return RedirectToAction(nameof(ManageFiles), new { uid = department?.UID });
@@ -122,7 +114,6 @@ namespace Hospital_Management_System.Controllers
         public IActionResult DeleteFile(int id, string uid)
         {
             _departmentService.DeleteDepartmentFile(id);
-
             return RedirectToAction(nameof(ManageFiles), new { uid = uid });
         }
     }

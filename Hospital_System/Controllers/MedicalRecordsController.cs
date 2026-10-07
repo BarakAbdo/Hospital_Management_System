@@ -1,6 +1,4 @@
-﻿
-
-using Hospital_Management_System.Application.Dtos.MedicalRecordsDtos;
+﻿using Hospital_Management_System.Application.Dtos.MedicalRecordsDtos;
 using Hospital_Management_System.Application.Services.Base;
 using Hospital_Management_System.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -10,33 +8,32 @@ namespace Hospital_Management_System.Controllers
 {
     public class MedicalRecordsController : Controller
     {
-
         private readonly IMedicalRecordService _medicalRecordService;
 
         public MedicalRecordsController(IMedicalRecordService medicalRecordService)
         {
             _medicalRecordService = medicalRecordService;
         }
-        public IActionResult Index() 
+
+        public IActionResult Index()
         {
             var medicalRecords = _medicalRecordService.GetAllMedicalRecords();
             return View(medicalRecords);
         }
 
-        public void GetPatient() 
+        public void GetPatient()
         {
             var patients = _medicalRecordService.GetAllPatients();
             SelectList patientSelectList = new SelectList(patients, "Id", "Name");
             ViewBag.patientSelectList = patientSelectList;
         }
 
-        public void GetDoctor() 
+        public void GetDoctor()
         {
             var doctors = _medicalRecordService.GetAllDoctors();
             SelectList doctorSelectList = new SelectList(doctors, "Id", "Name");
             ViewBag.doctorSelectList = doctorSelectList;
         }
-
 
         [HttpGet]
         public IActionResult Create()
@@ -45,7 +42,6 @@ namespace Hospital_Management_System.Controllers
             GetDoctor();
             return View();
         }
-
 
         [HttpPost]
         public IActionResult Create(CreateMedicalRecordDto medicalRecord)
@@ -59,7 +55,6 @@ namespace Hospital_Management_System.Controllers
             GetDoctor();
             return View(medicalRecord);
         }
-
 
         [HttpGet]
         public IActionResult Edit(string uid)
@@ -84,7 +79,6 @@ namespace Hospital_Management_System.Controllers
             return View(update);
         }
 
-
         [HttpPost]
         public IActionResult Edit(UpdateMedicalRecordDto medicalRecord)
         {
@@ -98,7 +92,6 @@ namespace Hospital_Management_System.Controllers
             GetDoctor();
             return View(medicalRecord);
         }
-        
 
         [HttpGet]
         public IActionResult Delete(string uid)
@@ -113,19 +106,14 @@ namespace Hospital_Management_System.Controllers
 
             return View(medicalRecord);
         }
+
         [HttpPost]
-        public IActionResult Delete(MedicalRecord medicalRecord)
+        public IActionResult Delete(MedicalRecordDto medicalRecord)
         {
-            var oldMedicalRecord = _medicalRecordService.GetMedicalRecordByUId(medicalRecord.UID);
-            if (oldMedicalRecord == null)
-            {
-                return NotFound();
-            }
-            _medicalRecordService.DeleteMedicalRecord(oldMedicalRecord);
+            
+            _medicalRecordService.DeleteMedicalRecord(medicalRecord);
             return RedirectToAction("Index");
         }
-
-
 
         public IActionResult ManageFiles(string uid)
         {
@@ -145,7 +133,6 @@ namespace Hospital_Management_System.Controllers
             return View(medicalRecordFile);
         }
 
-
         [HttpPost]
         public IActionResult ManageFiles(MedicalRecordFile medicalRecordFile, IFormFile fileMedicalRecord)
         {
@@ -153,16 +140,12 @@ namespace Hospital_Management_System.Controllers
 
             var medicalRecord = _medicalRecordService.GetMedicalRecordById(medicalRecordFile.MedicalRecordId);
             return RedirectToAction(nameof(ManageFiles), new { uid = medicalRecord?.UID });
-
         }
-
 
         public IActionResult DeleteFile(int id, string uid)
         {
             _medicalRecordService.DeleteMedicalRecordFile(id);
             return RedirectToAction(nameof(ManageFiles), new { uid = uid });
         }
-
-
     }
 }

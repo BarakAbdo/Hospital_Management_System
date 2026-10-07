@@ -1,11 +1,12 @@
-﻿@using Hospital_Management_System.Domain.Models
-@model Invoice
+﻿@using Hospital_Management_System.Application.Dtos.InvoicesDtos
+@model InvoiceDto
 @{
 	ViewData["Title"] = "Delete Invoice";
 }
 <h1> Delete Invoice</h1>
 <div class="container">
 	<form method="post" asp-action="Delete">
+		
 
 		<input asp-for="UID" hidden />
 		<input asp-for="Id" hidden />
@@ -21,7 +22,7 @@
 			<input asp-for="Status" class="form-control" readonly /><br>
 
 			<label class="control-label">Patient</label><br>
-			<input asp-for="Patients.Name" class="form-control" readonly /><br>
+			<input asp-for="PatientName" class="form-control" readonly /><br>
 
 		</div>
 		<br>

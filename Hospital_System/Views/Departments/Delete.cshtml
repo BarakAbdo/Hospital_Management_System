@@ -1,5 +1,5 @@
-﻿@using Hospital_Management_System.Domain.Models
-@model Department
+﻿@using Hospital_Management_System.Application.Dtos.DepartmentDtos
+@model DepartmentDto
 @{
 	ViewData["Title"] = "Delete Department";
 }
@@ -8,7 +8,8 @@
 <div class="container">
 	<form method="post" asp-action="Delete">
 
-		<input type="hidden" asp-for="UID" />
+		<<input asp-for="Id" hidden/>
+		<input asp-for="UID" hidden/>
 
 		<div class="form-group">
 			<label class="control-label">Name</label><br>

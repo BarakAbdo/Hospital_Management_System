@@ -1,6 +1,4 @@
-﻿
-
-using Hospital_Management_System.Application.Dtos.PrescriptionsDtos;
+﻿using Hospital_Management_System.Application.Dtos.PrescriptionsDtos;
 using Hospital_Management_System.Application.Services.Base;
 using Hospital_Management_System.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -17,27 +15,28 @@ namespace Hospital_Management_System.Controllers
             _prescriptionService = prescriptionService;
         }
 
-        public IActionResult Index() 
+        [HttpGet]
+        public IActionResult Index()
         {
             var prescriptions = _prescriptionService.GetAllPrescriptions();
             return View(prescriptions);
         }
 
-        public void GetPatient() 
+        private void GetPatient()
         {
             IEnumerable<Patient> patients = _prescriptionService.GetAllPatients();
             SelectList patientSelectList = new SelectList(patients, "Id", "Name");
             ViewBag.patientSelectList = patientSelectList;
         }
 
-        public void GetDoctor() 
+        private void GetDoctor()
         {
             IEnumerable<Doctor> doctors = _prescriptionService.GetAllDoctors();
             SelectList doctorSelectList = new SelectList(doctors, "Id", "Name");
             ViewBag.doctorSelectList = doctorSelectList;
         }
 
-        public void GetMedication() 
+        private void GetMedication()
         {
             IEnumerable<Medication> medications = _prescriptionService.GetAllMedications();
             SelectList medicationSelectList = new SelectList(medications, "Id", "Name");
@@ -54,7 +53,6 @@ namespace Hospital_Management_System.Controllers
             return View();
         }
 
-
         [HttpPost]
         public IActionResult Create(CreatePrescriptionDto prescription)
         {
@@ -69,8 +67,6 @@ namespace Hospital_Management_System.Controllers
 
             return View(prescription);
         }
-
-
 
         [HttpGet]
         public IActionResult Edit(string uid)
@@ -98,8 +94,6 @@ namespace Hospital_Management_System.Controllers
             return View(update);
         }
 
-
-
         [HttpPost]
         public IActionResult Edit(UpdatePrescriptionDto prescription)
         {
@@ -112,18 +106,11 @@ namespace Hospital_Management_System.Controllers
             GetDoctor();
             GetMedication();
             return View(prescription);
-
         }
-
-
 
         [HttpGet]
         public IActionResult Delete(string uid)
         {
-            GetPatient();
-            GetDoctor();
-            GetMedication();
-
             var prescription = _prescriptionService.GetPrescriptionByUId(uid);
             if (prescription == null)
             {
@@ -132,24 +119,18 @@ namespace Hospital_Management_System.Controllers
             return View(prescription);
         }
 
-
-
         [HttpPost]
-        public IActionResult Delete(Prescription prescription)
+        public IActionResult Delete(PrescriptionDto prescription)
         {
-            GetDoctor();
-            GetPatient();
-
             var oldPrescription = _prescriptionService.GetPrescriptionByUId(prescription.UID);
             if (oldPrescription == null)
             {
                 return NotFound();
             }
-            _prescriptionService.DeletePrescription(prescription.UID);
+
+            _prescriptionService.DeletePrescription(prescription);
             return RedirectToAction("Index");
         }
-
-       
 
         [HttpGet]
         public IActionResult ManageFiles(string uid)
@@ -171,7 +152,6 @@ namespace Hospital_Management_System.Controllers
 
             return View(prescriptionFile);
         }
-
 
         [HttpPost]
         public IActionResult ManageFiles(PrescriptionFile prescriptionFile, IFormFile filePrescription)

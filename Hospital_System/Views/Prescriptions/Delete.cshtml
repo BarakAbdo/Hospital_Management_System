@@ -1,5 +1,5 @@
-﻿@using Hospital_Management_System.Domain.Models
-@model Prescription
+﻿@using Hospital_Management_System.Application.Dtos.PrescriptionsDtos
+@model PrescriptionDto
 @{
 	ViewData["Title"] = "Delete Prescription";
 }
@@ -18,13 +18,13 @@
 			<input asp-for="Duration" class="form-control" readonly /><br>
 
 			<label class="control-label">Patient</label><br>
-			<input asp-for="Patient.Name" class="form-control" readonly /><br>
+			<input asp-for="PatientName" class="form-control" readonly /><br>
 
 			<label class="control-label">Doctor</label><br>
-			<input asp-for="Doctor.Name" class="form-control" readonly /><br>
+			<input asp-for="DoctorName" class="form-control" readonly /><br>
 
 			<label class="control-label">Medication</label><br>
-			<input asp-for="Medication.Name" class="form-control" readonly /><br>
+			<input asp-for="MedicationName" class="form-control" readonly /><br>
 
 		</div>
 		<br>
