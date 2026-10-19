@@ -1,0 +1,65 @@
+﻿@using Hospital_Management_System.Application.Dtos.CartDtos
+@model IEnumerable<CartItemDto>
+
+@{
+    ViewData["Title"] = "Cart Management";
+}
+
+<div class="text-center mb-4">
+    <h2 class="fw-bold">Cart Management</h2>
+    <p class="text-muted">Manage and view customer cart items</p>
+</div>
+
+<div class="container mt-2">
+    <table class="table table-primary table-hover align-middle">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>User ID</th>
+                <th>Product Name</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model == null || !Model.Any())
+            {
+                <tr>
+                    <td colspan="7" class="text-center bg-white text-muted">No cart items found.</td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.UserId</td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(item.ImageUrl))
+                            {
+                                <img src="@item.ImageUrl" alt="@item.Name" style="width: 35px; height: 35px; object-fit: cover;" class="me-2 rounded" />
+                            }
+                            @item.Name
+                        </td>
+                        <td>$@item.Price</td>
+                        <td>@item.Quantity</td>
+                        <td>$@(item.Price* item.Quantity)</td>
+                        <td>
+                            
+                            <form asp-controller="Carts" asp-action="RemoveFromCart" method="post" class="d-inline" onsubmit="return confirm('Are you sure you want to remove this item?');">
+                                <input type="hidden" name="userId" value="@item.UserId" />
+                                <input type="hidden" name="productId" value="@item.ProductId" />
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                    <i class="fas fa-cart-arrow-down me-1"></i> Remove from Cart
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

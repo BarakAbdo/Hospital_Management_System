@@ -1,0 +1,53 @@
+﻿@using Hospital_Management_System.Application.Dtos.ProductsDtos
+@model IEnumerable<ProductDto>
+
+@{
+    ViewData["Title"] = "Product Management";
+}
+
+<div class="text-center mb-4">
+    <h2 class="fw-bold">Product Management</h2>
+    <p class="text-muted">Manage and view product information</p>
+</div>
+
+<div class="container mt-2">
+    <div class="mb-3 text-end">
+        <a asp-action="Create" class="btn btn-primary">Create new Product</a>
+    </div>
+
+    <table class="table table-primary table-hover align-middle">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in Model)
+            {
+                <tr>
+                    <td>@product.Id</td>
+                    <td>@product.Name</td>
+                    <td>$@product.Price</td>
+                    <td>
+                        <!-- زر الإضافة إلى السلة (يتعامل مع الـ ID أو الـ UID حسب الـ Dto الخاص بك) -->
+                        <form asp-controller="Carts" asp-action="AddToCart" method="post" class="d-inline">
+                            <input type="hidden" name="UserId" value="1" />
+                            <input type="hidden" name="ProductId" value="@product.Id" />
+                            <input type="hidden" name="Quantity" value="1" />
+                            <button type="submit" class="btn btn-sm btn-success">
+                                <i class="fas fa-shopping-cart me-1"></i> Add to Cart
+                            </button>
+                        </form>
+
+                        <!-- أزرار التعديل والحذف المتوافقة مع الـ UID كما في الكاتيجوري -->
+                        <a asp-action="Edit" asp-route-uid="@product.UID" class="btn btn-sm btn-primary ms-1">Edit</a>
+                        <a asp-action="Delete" asp-route-uid="@product.UID" class="btn btn-sm btn-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

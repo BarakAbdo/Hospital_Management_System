@@ -1,0 +1,48 @@
+﻿@using Hospital_Management_System.Application.Dtos.InvoicesDtos
+@model IEnumerable<InvoiceDto>
+
+@{
+    ViewData["Title"] = "Invoice Management";
+}
+
+<div class="text-center mb-4">
+    <h2 class="fw-bold">Invoice Management</h2>
+    <p class="text-muted">Manage and view invoice information</p>
+</div>
+
+<div class="container mt-2">
+    <div class="mb-3 text-end">
+        <a asp-action="Create" class="btn btn-primary">Create new Invoice</a>
+    </div>
+    <table class="table table-primary table-hover">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Amount</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Patient</th>
+                <th>Action</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var Invoice in Model)
+            {
+                <tr>
+                    <td>@Invoice.Id</td>
+                    <td>@Invoice.Amount</td>
+                    <td>@Invoice.Date</td>
+                    <td>@Invoice.Status</td>
+                    <td>@Invoice.PatientName</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-uid="@Invoice.UID" class="btn btn-sm btn-primary">Edit</a>
+                        <a asp-action="Delete" asp-route-uid="@Invoice.UID" class="btn btn-sm btn-danger">Delete</a>
+                        <a asp-controller="Invoices" asp-action="ManageFiles" asp-route-uid="@Invoice.UID" class="btn btn-warning">Files</a>
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

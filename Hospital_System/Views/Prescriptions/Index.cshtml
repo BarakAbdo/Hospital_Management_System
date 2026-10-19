@@ -1,0 +1,47 @@
+﻿@using Hospital_Management_System.Application.Dtos.PrescriptionsDtos
+@model IEnumerable<PrescriptionDto>;
+
+@{
+	ViewData["Title"] = "Prescription Management";
+}
+<div class="text-center" mb-4>
+	<h2 class="fw-bold">Prescription Management</h2>
+	<p class="text-muted">Manage and view prescription information</p>
+</div>
+
+<div class="container mt-2">
+	<div class="mb-3 text-end">
+		<a asp-action="Create" class="btn btn-primary">Create new Prescription</a>
+	</div>
+	<table class="table table-primary table-hover">
+		<thead>
+			<tr>
+				<th>ID</th>
+				<th>Dosage</th>
+				<th>Duration</th>
+				<th>Patient</th>
+				<th>Doctor</th>
+				<th>Medication</th>
+				<th>Action</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var Prescription in Model)
+			{
+			<tr>
+				<td>@Prescription.Id</td>
+				<td>@Prescription.Dosage</td>
+				<td>@Prescription.Duration</td>
+				<td>@Prescription.PatientName</td>
+				<td>@Prescription.DoctorName</td>
+				<td>@Prescription.MedicationName</td>
+				<td>
+						<a asp-action="Edit" asp-route-uid="@Prescription.UID" class="btn btn-sm btn-primary">Edit</a>
+						<a asp-action="Delete" asp-route-uid="@Prescription.UID" class="btn btn-sm btn-danger">Delete</a>
+						<a asp-controller="Prescriptions" asp-action="ManageFiles" asp-route-uid="@Prescription.UID" class="btn btn-warning">Files</a>
+				</td>
+			</tr>	
+			}
+		</tbody>
+	</table>
+</div>

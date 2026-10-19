@@ -1,0 +1,24 @@
+﻿@using Hospital_Management_System.Application.Dtos.CategoriesDtos
+@model CategoryDto
+@{
+	ViewData["Title"] = "Delete Category";
+}
+
+<h1>Delete Category</h1>
+<div class="container">
+	<form method="post" asp-action="Delete">
+
+		<input asp-for="Id" hidden />
+		<input asp-for="UID" hidden />
+
+		<div class="form-group">
+			<label class="control-label">Name</label><br>
+			<input asp-for="Name" class="form-control" readonly /><br>
+		</div>
+		<br>
+		<div class="form-group">
+			<input type="submit" value="Delete" class="btn btn-danger" />
+			<a asp-action="Index" class="btn btn-secondary">Cancel</a>
+		</div>
+	</form>
+</div>
