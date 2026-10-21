@@ -27,8 +27,8 @@ namespace Hospital_Management_System.Application.Services.Base
         void AddUserFile(UserFile userFile, IFormFile fileUser);
         void DeleteUserFile(int fileId);
 
-        bool Login(LoginDto loginDto);
+        User? Login(LoginDto loginDto);
 
-        bool Register(RegisterDto registerDto);
+        User? Register(RegisterDto registerDto);
     }
 }

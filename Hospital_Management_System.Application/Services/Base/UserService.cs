@@ -185,7 +185,7 @@ namespace Hospital_Management_System.Application.Services.Base
             return "/Files/Users/" + fileName;
 
         }
-        public bool Login(LoginDto loginDto)
+        public User? Login(LoginDto loginDto)
         {
             var user = _unitOfWork.UserRepo
                 .GetByUsername(loginDto.Username);
@@ -193,7 +193,7 @@ namespace Hospital_Management_System.Application.Services.Base
             if (user == null ||
                 string.IsNullOrEmpty(user.PasswordHash))
             {
-                return false;
+                return null;
             }
 
             bool userFound = BCrypt.Net.BCrypt.Verify(
@@ -201,12 +201,12 @@ namespace Hospital_Management_System.Application.Services.Base
                 user.PasswordHash
             );
 
-            return userFound;
+            return userFound ? user : null;
         }
 
 
 
-        public bool Register(RegisterDto registerDto)
+        public User? Register(RegisterDto registerDto)
         {
             var existingUsername = _unitOfWork.UserRepo
                  .GetByUsername(registerDto.Username);
@@ -216,7 +216,7 @@ namespace Hospital_Management_System.Application.Services.Base
 
             if (existingUsername != null || existingEmail != null)
             {
-                return false;
+                return null;
             }
 
             var user = new User
@@ -234,7 +234,7 @@ namespace Hospital_Management_System.Application.Services.Base
 
             _unitOfWork.Save();
 
-            return true;
+            return user;
         }
     }
 }

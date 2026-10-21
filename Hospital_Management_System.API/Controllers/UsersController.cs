@@ -2,6 +2,7 @@
 using Hospital_Management_System.Application.Dtos.LoginsDtos;
 using Hospital_Management_System.Application.Dtos.RegistersDtos;
 using Hospital_Management_System.Application.Services.Base;
+using Hospital_Management_System.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -22,12 +23,16 @@ namespace Hospital_Management_System.API.Controllers
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginDto loginDto)
         {
-            bool userFound = _userService.Login(loginDto);
+            User? user = _userService.Login(loginDto);
 
-            if (userFound)
+            if (user != null)
             {
                 return Ok(new
                 {
+                    userId = user.Id,
+                    username = user.Username,
+                    name = user.Name,
+                    email = user.Email,
                     message = "Login Successful"
                 });
             }
@@ -65,9 +70,9 @@ namespace Hospital_Management_System.API.Controllers
                 });
             }
 
-            bool isRegistered = _userService.Register(registerDto);
+            User? user = _userService.Register(registerDto);
 
-            if (isRegistered)
+            if (user != null)
             {
                 return Ok(new
                 {
