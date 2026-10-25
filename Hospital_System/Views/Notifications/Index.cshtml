@@ -1,0 +1,50 @@
+﻿@model IEnumerable<Hospital_Management_System.Application.Dtos.NotificationDtos.NotificationDto>
+
+<div class="container mt-4">
+    <h2>My Notifications</h2>
+    <hr />
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-info">No notifications found.</div>
+    }
+    else
+    {
+        <ul class="list-group">
+            @foreach (var item in Model)
+            {
+                <li class="list-group-item d-flex justify-content-between align-items-center @(item.IsRead ? "bg-light" : "list-group-item-action")">
+                    <div>
+                        <h5 class="mb-1">@item.Title</h5>
+                        <p class="mb-1">@item.Message</p>
+                        <small class="text-muted">@item.CreatedAt.ToString("g")</small>
+                    </div>
+                    <div>
+                        @if (!item.IsRead)
+                        {
+                            <form asp-action="MarkAsRead" method="post" class="d-inline">
+                                <input type="hidden" name="id" value="@item.Id" />
+                                <input type="hidden" name="userId" value="@item.UserId" />
+                                <input type="hidden" name="IsRead" value="true" />
+                                <button type="submit" class="btn btn-sm btn-outline-primary">Mark as Read</button>
+                            </form>
+
+
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Read</span>
+                        }
+
+                        <form asp-action="Delete" method="post" class="d-inline ms-1">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@item.Id" />
+                            <input type="hidden" name="userId" value="@item.UserId" />
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                        </form>
+                    </div>
+                </li>
+            }
+        </ul>
+    }
+</div>

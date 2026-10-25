@@ -1,9 +1,12 @@
+using Hospital_Management_System.Application.Repositories.Base;
 using Hospital_Management_System.Application.Services;
 using Hospital_Management_System.Application.Services.Base;
 using Hospital_Management_System.Infrastructure.Data;
 using Hospital_Management_System.Infrastructure.Repositories.Base;
 using Hospital_Management_System.Infrastructure.Repositories.CartRepo;
 using Hospital_Management_System.Infrastructure.Repositories.CategoryRepo;
+using Hospital_Management_System.Infrastructure.Repositories.NotificationRepo;
+using Hospital_Management_System.Infrastructure.Repositories.OrderRepo;
 using Hospital_Management_System.Infrastructure.Repositories.ProductRepo;
 using Hospital_Management_System.Infrastructure.Repositories.UserRepo;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +25,9 @@ options.UseSqlServer(conectionString));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -31,6 +37,10 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
 builder.Services.AddScoped<ICartRepository, CartRepository>();
 builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
+
+
 
 
 builder.Services.AddControllers();

@@ -23,11 +23,14 @@ namespace Hospital_Management_System.Infrastructure.Data
         public DbSet<Permission> Permissions { get; set; }
         public DbSet<User> Users { get; set; }
 
-        public DbSet<PermissionRole> PermissionRoles { get; set; }
-
         public DbSet<UserRole> RoleUsers { get; set; }
-
         public DbSet<CartItem> CartItems { get; set; }
+
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
+
+        public DbSet<PermissionRole> PermissionRoles { get; set; }
 
         public DbSet<PatientFile> PatientFiles { get; set; }
 

@@ -1,0 +1,110 @@
+﻿@model IEnumerable<Hospital_Management_System.Application.Dtos.OrderDtos.OrderDto>
+
+@{
+    ViewData["Title"] = "Orders Management";
+}
+
+<div class="container mt-4">
+
+    <h2 class="mb-4">Orders Management</h2>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <table class="table table-bordered table-hover align-middle">
+
+                <thead class="table-dark">
+                    <tr>
+                        <th>Order ID</th>
+                        <th>User ID</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Update Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @foreach (var order in Model)
+                    {
+                        <tr>
+                            <td>@order.Id</td>
+
+                            <td>@order.UserId</td>
+
+                            <td>
+                                @order.TotalAmount.ToString("N2") SAR
+                            </td>
+
+                            <td>
+                                @if (order.Status == "Pending")
+                                {
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                }
+                                else if (order.Status == "Processing")
+                                {
+                                    <span class="badge bg-primary">Processing</span>
+                                }
+                                else if (order.Status == "Shipped")
+                                {
+                                    <span class="badge bg-info text-dark">Shipped</span>
+                                }
+                                else if (order.Status == "Delivered")
+                                {
+                                    <span class="badge bg-success">Delivered</span>
+                                }
+                                else if (order.Status == "Cancelled")
+                                {
+                                    <span class="badge bg-danger">Cancelled</span>
+                                }
+                            </td>
+
+                            <td>
+                                <form asp-controller="Orders"
+                                      asp-action="UpdateStatus"
+                                      method="post">
+
+                                    @Html.AntiForgeryToken()
+
+                                    <input type="hidden"
+                                           name="orderId"
+                                           value="@order.Id" />
+
+                                    <div class="d-flex gap-2">
+
+                                        <select name="Status"
+                                                class="form-select form-select-sm">
+
+                                            <option value="Pending" selected="@(order.Status == "Pending")">Pending</option>
+                                            <option value="Processing" selected="@(order.Status == "Processing")">Processing</option>
+                                            <option value="Shipped" selected="@(order.Status == "Shipped")">Shipped</option>
+                                            <option value="Delivered" selected="@(order.Status == "Delivered")">Delivered</option>
+                                            <option value="Cancelled" selected="@(order.Status == "Cancelled")">Cancelled</option>
+
+                                        </select>
+
+                                        <button type="submit"
+                                                class="btn btn-success btn-sm">
+                                            Save
+                                        </button>
+
+                                    </div>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+            @if (!Model.Any())
+            {
+                <div class="alert alert-info text-center">
+                    No orders found.
+                </div>
+            }
+
+        </div>
+    </div>
+</div>

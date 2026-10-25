@@ -1,4 +1,5 @@
-﻿using Hospital_Management_System.Infrastructure.Data;
+﻿using Hospital_Management_System.Application.Repositories.Base;
+using Hospital_Management_System.Infrastructure.Data;
 using Hospital_Management_System.Infrastructure.Repositories.AccountRepo;
 using Hospital_Management_System.Infrastructure.Repositories.AppointmentRepo;
 using Hospital_Management_System.Infrastructure.Repositories.CartRepo;
@@ -8,6 +9,8 @@ using Hospital_Management_System.Infrastructure.Repositories.DoctorRepo;
 using Hospital_Management_System.Infrastructure.Repositories.InvoiceRepo;
 using Hospital_Management_System.Infrastructure.Repositories.MedicalRecordRepo;
 using Hospital_Management_System.Infrastructure.Repositories.MedicationRepo;
+using Hospital_Management_System.Infrastructure.Repositories.NotificationRepo;
+using Hospital_Management_System.Infrastructure.Repositories.OrderRepo;
 using Hospital_Management_System.Infrastructure.Repositories.PatientRepo;
 using Hospital_Management_System.Infrastructure.Repositories.PermissionRepo;
 using Hospital_Management_System.Infrastructure.Repositories.PrescriptionRepo;
@@ -25,6 +28,7 @@ namespace Hospital_Management_System.Infrastructure.Repositories.Base
         public UnitOfWork(AppDbContext db) 
         {
             _db = db;
+
             AccountRepo = new AccountRepository(db);
 
             AppointmentRepo = new AppointmentRepository(db);
@@ -54,7 +58,12 @@ namespace Hospital_Management_System.Infrastructure.Repositories.Base
             CategoryRepo = new CategoryRepository(db);
             
             CartRepo = new CartRepository(db);
+
+            OrderRepo = new OrderRepository(db);
+
+            NotificationRepo = new NotificationRepository(db);
         }
+
         public IAccountRepository AccountRepo { get; }
 
         public IAppointmentRepository AppointmentRepo { get; }
@@ -83,8 +92,11 @@ namespace Hospital_Management_System.Infrastructure.Repositories.Base
 
         public ICategoryRepository CategoryRepo { get; }
 
-
         public ICartRepository CartRepo { get; }
+
+        public IOrderRepository OrderRepo { get; }
+
+        public INotificationRepository NotificationRepo { get; }
 
         public void Save()
         { 
